@@ -27,8 +27,22 @@
     </repositories>
 
     <build>
-        <sourceDirectory>src/main/scala/</sourceDirectory>
-        <testSourceDirectory>src/test/scala/</testSourceDirectory>
+<!--        <sourceDirectory>.</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>src/main/java/**/*.java</include>
+                        <include>src/main/scala/**/*.scala</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>-->
+
+        <sourceDirectory>src/main/java/</sourceDirectory>
+        <!--<testSourceDirectory>src/test/scala/</testSourceDirectory>-->
 
         <plugins>
             <plugin>
@@ -92,8 +106,8 @@
     <dependencies>
         <dependency>
             <groupId>io.crate</groupId>
-            <artifactId>crate-jdbc</artifactId>
-            <version>1.8.1</version>
+            <artifactId>crate-client</artifactId>
+            <version>0.50.3</version>
         </dependency>
        <dependency>
             <groupId>org.scala-lang</groupId>

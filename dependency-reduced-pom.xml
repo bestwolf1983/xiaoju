@@ -5,8 +5,7 @@
   <artifactId>xiaoju</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src/main/scala/</sourceDirectory>
-    <testSourceDirectory>src/test/scala/</testSourceDirectory>
+    <sourceDirectory>src/main/java/</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.scala-tools</groupId>
@@ -75,202 +74,6 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-cli</artifactId>
-      <version>0.13.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hive-common</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-metastore</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-serde</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-service</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-shims</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-cli</artifactId>
-          <groupId>commons-cli</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jline</artifactId>
-          <groupId>jline</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libthrift</artifactId>
-          <groupId>org.apache.thrift</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-exec</artifactId>
-      <version>0.13.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hive-ant</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-codec</artifactId>
-          <groupId>commons-codec</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-httpclient</artifactId>
-          <groupId>commons-httpclient</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-io</artifactId>
-          <groupId>commons-io</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang3</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>log4j</artifactId>
-          <groupId>log4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>antlr-runtime</artifactId>
-          <groupId>org.antlr</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ST4</artifactId>
-          <groupId>org.antlr</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>avro</artifactId>
-          <groupId>org.apache.avro</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ant</artifactId>
-          <groupId>org.apache.ant</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-compress</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libfb303</artifactId>
-          <groupId>org.apache.thrift</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>zookeeper</artifactId>
-          <groupId>org.apache.zookeeper</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>groovy-all</artifactId>
-          <groupId>org.codehaus.groovy</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>datanucleus-core</artifactId>
-          <groupId>org.datanucleus</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>stax-api</artifactId>
-          <groupId>stax</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-metastore</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-shims</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-jdbc</artifactId>
-      <version>0.13.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>httpclient</artifactId>
-          <groupId>org.apache.httpcomponents</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>httpcore</artifactId>
-          <groupId>org.apache.httpcomponents</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-common</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-serde</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-service</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libthrift</artifactId>
-          <groupId>org.apache.thrift</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hive-metastore</artifactId>
-          <groupId>org.apache.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
       <version>1.2.6</version>
@@ -283,6 +86,10 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>lz4</artifactId>
           <groupId>net.jpountz.lz4</groupId>
         </exclusion>
@@ -290,23 +97,12 @@
           <artifactId>snappy-java</artifactId>
           <groupId>org.xerial.snappy</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>jobserver</groupId>
-      <artifactId>job-server-api_2.10</artifactId>
-      <version>0.5.1</version>
-      <scope>system</scope>
-      <systemPath>D:/IdeaWorkSpace/extlib/job-server-api_2.10-0.5.1.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming-kafka_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -322,7 +118,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -334,7 +130,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -346,11 +142,19 @@
           <groupId>com.twitter</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>spark-launcher_2.10</artifactId>
+          <groupId>org.apache.spark</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>spark-network-common_2.10</artifactId>
           <groupId>org.apache.spark</groupId>
         </exclusion>
         <exclusion>
           <artifactId>spark-network-shuffle_2.10</artifactId>
+          <groupId>org.apache.spark</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spark-unsafe_2.10</artifactId>
           <groupId>org.apache.spark</groupId>
         </exclusion>
         <exclusion>
@@ -366,6 +170,10 @@
           <groupId>org.eclipse.jetty.orbit</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>commons-lang3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>commons-math3</artifactId>
           <groupId>org.apache.commons</groupId>
         </exclusion>
@@ -379,6 +187,14 @@
         </exclusion>
         <exclusion>
           <artifactId>jcl-over-slf4j</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
@@ -404,6 +220,14 @@
         <exclusion>
           <artifactId>json4s-jackson_2.10</artifactId>
           <groupId>org.json4s</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jersey-server</artifactId>
+          <groupId>com.sun.jersey</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jersey-core</artifactId>
+          <groupId>com.sun.jersey</groupId>
         </exclusion>
         <exclusion>
           <artifactId>mesos</artifactId>
@@ -455,19 +279,15 @@
         </exclusion>
         <exclusion>
           <artifactId>pyrolite</artifactId>
-          <groupId>org.spark-project</groupId>
+          <groupId>net.razorvine</groupId>
         </exclusion>
         <exclusion>
           <artifactId>py4j</artifactId>
           <groupId>net.sf.py4j</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>commons-lang3</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>log4j</artifactId>
-          <groupId>log4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
           <artifactId>snappy-java</artifactId>
@@ -480,14 +300,6 @@
         <exclusion>
           <artifactId>unused</artifactId>
           <groupId>org.spark-project.spark</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -530,7 +342,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -562,7 +374,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-hive_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -570,8 +382,16 @@
           <groupId>org.spark-project.hive</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>commons-httpclient</artifactId>
+          <groupId>commons-httpclient</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>hive-exec</artifactId>
           <groupId>org.spark-project.hive</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpclient</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jackson-mapper-asl</artifactId>
@@ -582,15 +402,11 @@
           <groupId>org.spark-project.hive</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>avro-mapred</artifactId>
+          <artifactId>avro</artifactId>
           <groupId>org.apache.avro</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>commons-httpclient</artifactId>
-          <groupId>commons-httpclient</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>avro</artifactId>
+          <artifactId>avro-mapred</artifactId>
           <groupId>org.apache.avro</groupId>
         </exclusion>
         <exclusion>
@@ -602,7 +418,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-hive-thriftserver_2.10</artifactId>
-      <version>1.3.1</version>
+      <version>1.4.1</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
