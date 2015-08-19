@@ -77,7 +77,7 @@ object TestDmBuilkInsert {
 
       var reader: BufferedReader = null
       var fs = FileSystem.get(new Configuration())
-      var files = fs.listStatus(new Path("/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1"))
+      var files = fs.listStatus(new Path("hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1"))
 
       var startFileIndex = 0
       if (split.equals("1")) {
@@ -147,8 +147,6 @@ object TestDmBuilkInsert {
         }
         i = i + 1
       }
-
-
     }
 
     catch {
