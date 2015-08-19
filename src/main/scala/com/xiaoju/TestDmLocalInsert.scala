@@ -1,18 +1,19 @@
 package com.xiaoju
 
-import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.io._
 import java.net.URI
-import java.sql.{DriverManager, PreparedStatement}
-import java.util.{UUID, Date, HashMap}
-import scala.reflect.runtime.universe._
-import io.crate.client.CrateClient
-import scala.collection.JavaConverters._
+import java.sql.PreparedStatement
+import java.util.{Date, HashMap, UUID}
+
 import io.crate.action.sql.SQLBulkRequest
+import io.crate.client.CrateClient
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 
+import scala.collection.JavaConverters._
 
-object TestDmBuilkInsert {
+
+object TestDmLocalInsert {
   val dbClassName = "io.crate.client.jdbc.CrateDriver"
   val CONNECTION = "crate://localhost:4300"
 
@@ -87,11 +88,8 @@ object TestDmBuilkInsert {
       var end = 0L
 
       var reader: BufferedReader = null
-      var fileDir = "hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1/"
-      var conf = new Configuration()
-      conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem")
-      var fs = FileSystem.get(URI.create(fileDir), conf)
-      var files = fs.listStatus(new Path(fileDir))
+      var fileDir = "/data/xiaoju/soft/cenyuhai/data/"
+      var files = new File(fileDir).listFiles()
 
       var startFileIndex = 0
       if (split.equals("1")) {
@@ -112,10 +110,10 @@ object TestDmBuilkInsert {
       i = startFileIndex
       var j = 0
       while (i < endFileIndex) {
-        var in: InputStream = null
+        // var in: InputStream = null
         try {
-          in = fs.open(files(i).getPath())
-          reader = new BufferedReader(new InputStreamReader(in))
+          //in = fs.open(files(i).getPath())
+          reader = new BufferedReader(new FileReader(files(i)))
           var line = 0
           while ((tempString = reader.readLine()) != null) {
             line = line + 1
