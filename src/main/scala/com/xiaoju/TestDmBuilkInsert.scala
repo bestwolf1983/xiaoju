@@ -1,6 +1,7 @@
 package com.xiaoju
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.net.URI
 import java.sql.{DriverManager, PreparedStatement}
 import java.util.{UUID, Date, HashMap}
 
@@ -76,8 +77,9 @@ object TestDmBuilkInsert {
       var end = 0L
 
       var reader: BufferedReader = null
-      var fs = FileSystem.get(new Configuration())
-      var files = fs.listStatus(new Path("hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1"))
+      var fileDir = "hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1/"
+      var fs = FileSystem.get(URI.create(fileDir), new Configuration())
+      var files = fs.listStatus(new Path(fileDir))
 
       var startFileIndex = 0
       if (split.equals("1")) {
