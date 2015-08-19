@@ -161,7 +161,7 @@ object TestDmLocalInsert {
             }
           }
 
-          in.close()
+          // in.close()
           reader.close()
         } catch {
           case ex: Exception =>
