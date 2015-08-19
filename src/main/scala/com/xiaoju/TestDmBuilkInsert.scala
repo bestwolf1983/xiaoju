@@ -17,6 +17,7 @@ object TestDmBuilkInsert {
   val CONNECTION = "crate://localhost:4300"
 
   def convertToJavaColumnType(o: Any): Object = {
+    println(o.getClass)
     o match {
       case x:Int => x.asInstanceOf[java.lang.Integer]
       case x:Long => x.asInstanceOf[java.lang.Long]
