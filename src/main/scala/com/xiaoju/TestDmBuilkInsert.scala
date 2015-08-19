@@ -1,29 +1,48 @@
 package com.xiaoju
 
-
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.FileStatus
-import org.apache.hadoop.fs.FileSystem
-import org.apache.hadoop.fs.Path
-
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.{BufferedReader, InputStream, InputStreamReader}
 import java.sql.{DriverManager, PreparedStatement}
+import java.util.{UUID, Date, HashMap}
 
-import java.util.HashMap
+import io.crate.client.CrateClient
+import scala.collection.JavaConverters._
+import io.crate.action.sql.SQLBulkRequest
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
 
-object TestDmInsert {
+object TestDmBuilkInsert {
   val dbClassName = "io.crate.client.jdbc.CrateDriver"
   val CONNECTION = "crate://localhost:4300"
 
 
+  def convertToJavaColumnType(o: Any): Object = {
+    o match {
+      case x: Array[Short] => x.map(_.asInstanceOf[java.lang.Short])
+      case x: Array[Int] => x.map(_.asInstanceOf[java.lang.Integer])
+      case x: Array[Long] => x.map(_.asInstanceOf[java.lang.Long])
+      case x: Array[Float] => x.map(_.asInstanceOf[java.lang.Float])
+      case x: Array[Double] => x.map(_.asInstanceOf[java.lang.Double])
+      case x: Array[Byte] => x.map(_.asInstanceOf[java.lang.Byte])
+      case x: Array[Boolean] => x.map(_.asInstanceOf[java.lang.Boolean])
+      case m: Map[_, _] => m.asJava
+      case t: Seq[_] => t.asJava
+      case s: Some[_] => convertToJavaColumnType(s.get)
+      case None => null
+      case d: Date => d.getTime().asInstanceOf[java.lang.Long]
+      case u: UUID => u.toString()
+      case v: Any => v.asInstanceOf[AnyRef]
+    }
+  }
+
   def insert(split: String) {
     try {
-      val conn = DriverManager.getConnection(CONNECTION)
+      var client = new CrateClient(
+        "spark79.qq:4300",
+        "spark85.qq:4300",
+        "spark86.qq:4300"
+      )
 
       var tempString: String = null
-      var line = 1
       var insertSql: StringBuilder = null
       var ps: PreparedStatement = null
       var fields = TableSchema.fieldSchema.split("\n")
@@ -37,7 +56,6 @@ object TestDmInsert {
       }
 
       var fieldLength = fields.length
-
       insertSql = new StringBuilder(TableSchema.insertBiTagSql)
       insertSql.append("(")
 
@@ -54,7 +72,6 @@ object TestDmInsert {
       insertSql.append(")")
 
       var data: Array[String] = null
-      ps = conn.prepareStatement(insertSql.toString())
       var start = System.currentTimeMillis()
       var end = 0L
 
@@ -76,6 +93,8 @@ object TestDmInsert {
         endFileIndex = files.length
       }
 
+      var bulkArgs = Array.ofDim[Any](1000, fieldLength)
+      var param:  Array[Any] = null
       i = startFileIndex
       var j = 0
       while (i < endFileIndex) {
@@ -83,55 +102,61 @@ object TestDmInsert {
         try {
           in = fs.open(files(i).getPath())
           reader = new BufferedReader(new InputStreamReader(in))
+          var line = 0
           while ((tempString = reader.readLine()) != null) {
             line = line + 1
             data = tempString.split("\t")
             j = 0
+            param = new Array[Any](fieldLength)
             while(j < data.length) {
               temp = map.get(j).trim()
               if (temp.startsWith("int")) {
-                ps.setInt(j + 1, data(j).trim().replaceAll("'", "").toInt)
+                param(j) = data(i).trim().replaceAll("'", "").toInt
               } else if (temp.startsWith("double")) {
-                ps.setDouble(j + 1, data(j).trim().replaceAll("'", "").toDouble)
+                param(j) = data(j).trim().replaceAll("'", "").toDouble
               } else {
-                ps.setString(j + 1, data(j).trim().replaceAll("'", ""))
+                param(j) = data(j).trim().replaceAll("'", "")
               }
               j = j + 1
             }
+            bulkArgs((line-1) % 1000) = param
 
-            ps.addBatch()
+            if (line % 1000 == 0) {
+              val javaArgs = bulkArgs.map(_.map(convertToJavaColumnType(_)))
+              var request = new SQLBulkRequest(insertSql.toString(), javaArgs)
+              client.bulkSql(request).actionGet()
+              bulkArgs = Array.ofDim[Any](1000, fieldLength)
+            }
 
-            if (line % 10000 == 0) {
-              ps.executeBatch()
-              conn.commit()
+            if(line % 10000 == 0) {
               end = System.currentTimeMillis()
               println("insert 1w records use " + (end - start) / 1000 + " s")
               start = end
             }
 
-            if (line % 50000 == 0) {
+            if (line % 100000 == 0) {
               println("handle " + line + " records!")
             }
           }
-          ps.executeBatch()
-          conn.commit()
+
           in.close()
           reader.close()
         } catch {
           case ex: Exception =>
             ex.printStackTrace()
         }
+        i = i + 1
       }
-      i = i + 1
+
 
     }
-
 
     catch {
       case ex: Exception =>
         ex.printStackTrace()
     }
   }
+
 
   def main (args: Array[String]) {
     Class.forName(dbClassName)

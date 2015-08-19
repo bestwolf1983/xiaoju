@@ -13,8 +13,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.crate:crate-jdbc:1.8.1" level="project" />
-    <orderEntry type="library" name="Maven: io.crate:crate-client:0.49.5" level="project" />
+    <orderEntry type="library" name="Maven: io.crate:crate-client:0.50.3" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.4" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-reflect:2.10.4" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-compiler:2.10.4" level="project" />
