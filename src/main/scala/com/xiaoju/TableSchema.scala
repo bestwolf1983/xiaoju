@@ -6,7 +6,7 @@ package com.xiaoju
 object TableSchema {
   val insertBiTagSql =
     """
-      |insert into table tmp_dm_tag_pass_dd_kd_merge(
+      |insert into tmp_dm_tag_pass_dd_kd_merge(
       |phone,
       |dd_reg_time,
       |kd_reg_time,
