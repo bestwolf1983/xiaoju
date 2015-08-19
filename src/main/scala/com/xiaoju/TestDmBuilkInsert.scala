@@ -78,7 +78,9 @@ object TestDmBuilkInsert {
 
       var reader: BufferedReader = null
       var fileDir = "hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1/"
-      var fs = FileSystem.get(URI.create(fileDir), new Configuration())
+      var conf = new Configuration()
+      conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem")
+      var fs = FileSystem.get(URI.create(fileDir), conf)
       var files = fs.listStatus(new Path(fileDir))
 
       var startFileIndex = 0
