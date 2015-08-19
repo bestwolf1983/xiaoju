@@ -33,6 +33,7 @@ object TestDmBuilkInsert {
       case x: Array[Double] => x.map(_.asInstanceOf[java.lang.Double])
       case x: Array[Byte] => x.map(_.asInstanceOf[java.lang.Byte])
       case x: Array[Boolean] => x.map(_.asInstanceOf[java.lang.Boolean])
+      case x: Array[String] => x
       case x: Array[Any] => x.map(_.asInstanceOf[java.lang.Object])
       case m: Map[_, _] => m.asJava
       case t: Seq[_] => t.asJava
