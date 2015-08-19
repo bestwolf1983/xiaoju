@@ -159,7 +159,7 @@ object TestDmBuilkInsert {
 
 
   def main (args: Array[String]) {
-    Class.forName(dbClassName)
+    // Class.forName(dbClassName)
     var start = System.currentTimeMillis()
     insert(args(0))
     var end = System.currentTimeMillis()
