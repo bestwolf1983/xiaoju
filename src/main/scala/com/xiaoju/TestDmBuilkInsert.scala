@@ -25,6 +25,7 @@ object TestDmBuilkInsert {
       case x: Array[Double] => x.map(_.asInstanceOf[java.lang.Double])
       case x: Array[Byte] => x.map(_.asInstanceOf[java.lang.Byte])
       case x: Array[Boolean] => x.map(_.asInstanceOf[java.lang.Boolean])
+      case x: Array[String] => x.map(_.asInstanceOf[java.lang.String])
       case m: Map[_, _] => m.asJava
       case t: Seq[_] => t.asJava
       case s: Some[_] => convertToJavaColumnType(s.get)
@@ -115,9 +116,20 @@ object TestDmBuilkInsert {
             while(j < data.length) {
               temp = map.get(j).trim()
               if (temp.startsWith("int")) {
-                param(j) = data(i).trim().replaceAll("'", "").toInt
+                temp = data(i).trim().replaceAll("'", "")
+                if(temp == "\\N") {
+                  param(j) = null
+                } else {
+                  param(j) = data(i).trim().replaceAll("'", "").toLong
+                }
               } else if (temp.startsWith("double")) {
-                param(j) = data(j).trim().replaceAll("'", "").toDouble
+                temp = data(i).trim().replaceAll("'", "")
+                if(temp == "\\N") {
+                  param(j) = null
+                } else {
+                  param(j) = data(i).trim().replaceAll("'", "").toDouble
+                }
+
               } else {
                 param(j) = data(j).trim().replaceAll("'", "")
               }
