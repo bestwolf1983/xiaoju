@@ -77,7 +77,7 @@ object TestDmBuilkInsert {
       var end = 0L
 
       var reader: BufferedReader = null
-      var fileDir = "/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1/"
+      var fileDir = "hdfs://mycluster/user/rd/bi_dm/tmp_dm_tag_pass_dd_kd_merge_1/year=2015/month=07/day=06/pidsn=-1/"
       var fs = FileSystem.get(URI.create(fileDir), new Configuration())
       var files = fs.listStatus(new Path(fileDir))
 
