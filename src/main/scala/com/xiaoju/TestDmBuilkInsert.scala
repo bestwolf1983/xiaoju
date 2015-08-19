@@ -4,12 +4,13 @@ import java.io.{BufferedReader, InputStream, InputStreamReader}
 import java.net.URI
 import java.sql.{DriverManager, PreparedStatement}
 import java.util.{UUID, Date, HashMap}
-
+import scala.reflect.runtime.universe._
 import io.crate.client.CrateClient
 import scala.collection.JavaConverters._
 import io.crate.action.sql.SQLBulkRequest
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
+
 
 object TestDmBuilkInsert {
   val dbClassName = "io.crate.client.jdbc.CrateDriver"
@@ -17,6 +18,7 @@ object TestDmBuilkInsert {
 
 
   def convertToJavaColumnType(o: Any): Object = {
+    println(o.getClass)
     o match {
       case x: Array[Short] => x.map(_.asInstanceOf[java.lang.Short])
       case x: Array[Int] => x.map(_.asInstanceOf[java.lang.Integer])
@@ -26,6 +28,7 @@ object TestDmBuilkInsert {
       case x: Array[Byte] => x.map(_.asInstanceOf[java.lang.Byte])
       case x: Array[Boolean] => x.map(_.asInstanceOf[java.lang.Boolean])
       case x: Array[String] => x.map(_.asInstanceOf[java.lang.String])
+      case x: Array[Any] => x.map(_.asInstanceOf[java.lang.Object])
       case m: Map[_, _] => m.asJava
       case t: Seq[_] => t.asJava
       case s: Some[_] => convertToJavaColumnType(s.get)
