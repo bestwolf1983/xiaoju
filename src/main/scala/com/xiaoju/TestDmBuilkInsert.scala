@@ -125,18 +125,18 @@ object TestDmBuilkInsert {
             while(j < data.length) {
               temp = map.get(j).trim()
               if (temp.startsWith("int")) {
-                temp = data(i).trim().replaceAll("'", "")
+                temp = data(j).trim().replaceAll("'", "")
                 if(temp == "\\N") {
                   param(j) = null
                 } else {
-                  param(j) = data(i).trim().replaceAll("'", "").toLong
+                  param(j) = data(j).trim().replaceAll("'", "").toLong
                 }
               } else if (temp.startsWith("double")) {
-                temp = data(i).trim().replaceAll("'", "")
+                temp = data(j).trim().replaceAll("'", "")
                 if(temp == "\\N") {
                   param(j) = null
                 } else {
-                  param(j) = data(i).trim().replaceAll("'", "").toDouble
+                  param(j) = data(j).trim().replaceAll("'", "").toDouble
                 }
 
               } else {
