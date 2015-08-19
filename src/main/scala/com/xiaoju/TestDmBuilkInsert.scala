@@ -16,10 +16,12 @@ object TestDmBuilkInsert {
   val dbClassName = "io.crate.client.jdbc.CrateDriver"
   val CONNECTION = "crate://localhost:4300"
 
-
   def convertToJavaColumnType(o: Any): Object = {
-    println(o.getClass)
     o match {
+      case x:Int => x.asInstanceOf[java.lang.Integer]
+      case x:Long => x.asInstanceOf[java.lang.Long]
+      case x:Double => x.asInstanceOf[java.lang.Double]
+      case x: String => x
       case x: Array[Short] => x.map(_.asInstanceOf[java.lang.Short])
       case x: Array[Int] => x.map(_.asInstanceOf[java.lang.Integer])
       case x: Array[Long] => x.map(_.asInstanceOf[java.lang.Long])
@@ -27,7 +29,6 @@ object TestDmBuilkInsert {
       case x: Array[Double] => x.map(_.asInstanceOf[java.lang.Double])
       case x: Array[Byte] => x.map(_.asInstanceOf[java.lang.Byte])
       case x: Array[Boolean] => x.map(_.asInstanceOf[java.lang.Boolean])
-      case x: Array[String] => x.map(_.asInstanceOf[java.lang.String])
       case x: Array[Any] => x.map(_.asInstanceOf[java.lang.Object])
       case m: Map[_, _] => m.asJava
       case t: Seq[_] => t.asJava
