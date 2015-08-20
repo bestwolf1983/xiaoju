@@ -49,9 +49,7 @@ object TestDmLocalInsert {
   def insert(split: String) {
     try {
       var client = new CrateClient(
-        "spark79.qq:4300",
-        "spark85.qq:4300",
-        "spark86.qq:4300"
+        "10.120.91.143:4300"
       )
 
       var tempString: String = null
