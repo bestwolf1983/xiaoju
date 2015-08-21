@@ -49,7 +49,9 @@ object TestDmLocalInsert {
   def insert(split: String) {
     try {
       var client = new CrateClient(
-        "10.120.91.143:4300"
+        "10.120.91.143:4300",
+        "10.120.91.26:4300",
+        "10.120.91.26:5300"
       )
 
       var tempString: String = null
@@ -86,7 +88,7 @@ object TestDmLocalInsert {
       var end = 0L
 
       var reader: BufferedReader = null
-      var fileDir = "/data/xiaoju/soft/cenyuhai/data/"
+      var fileDir = "/home/xiaoju/data/"
       var files = new File(fileDir).listFiles()
 
       var startFileIndex = 0
@@ -123,14 +125,14 @@ object TestDmLocalInsert {
               if (temp.startsWith("int")) {
                 temp = data(j).trim().replaceAll("'", "")
                 if(temp == "\\N") {
-                  param(j) = null
+                  param(j) = 0
                 } else {
                   param(j) = data(j).trim().replaceAll("'", "").toInt
                 }
               } else if (temp.startsWith("double")) {
                 temp = data(j).trim().replaceAll("'", "")
                 if(temp == "\\N") {
-                  param(j) = null
+                  param(j) = 0.0d
                 } else {
                   param(j) = data(j).trim().replaceAll("'", "").toDouble
                 }
@@ -142,10 +144,13 @@ object TestDmLocalInsert {
             bulkArgs((line-1) % 1000) = param
 
             if (line % 1000 == 0) {
+              var bstart = System.currentTimeMillis()
               val javaArgs = bulkArgs.map(_.map(convertToJavaColumnType(_)))
               var request = new SQLBulkRequest(insertSql.toString(), javaArgs)
               client.bulkSql(request).actionGet()
               bulkArgs = Array.ofDim[Any](1000, fieldLength)
+              var bend = System.currentTimeMillis()
+              println("insert 1000 records use " + (bend - bstart) + " ms")
             }
 
             if(line % 10000 == 0) {
@@ -154,7 +159,7 @@ object TestDmLocalInsert {
               start = end
             }
 
-            if (line % 100000 == 0) {
+            if (line % 500000 == 0) {
               println("handle " + line + " records!")
             }
           }
