@@ -23,7 +23,7 @@ public class TestCreateBatchUpdate {
         System.out.println("start!");
         String updateSql = "update sf_order set test1 = ? where create_time=? and order_id = ?";
 
-        String fileName = "/data/xiaoju/output.txt";
+        String fileName = "/home/xiaoju/output.txt";
         //String fileName = "D:/1.txt";
         File file = new File(fileName);
         BufferedReader reader = null;
@@ -44,7 +44,7 @@ public class TestCreateBatchUpdate {
             }
         } else if(args[0].equals("2")) {
             reader = new BufferedReader(new FileReader(file));
-            Object[][] bulkArgs = new Object[count][2];
+            Object[][] bulkArgs = new Object[count][3];
             int line = 0;
             while ((tempString = reader.readLine()) != null) {
                 line++;
