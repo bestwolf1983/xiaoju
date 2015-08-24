@@ -35,7 +35,7 @@ public class TestCrateInsert {
         SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         try {
-            String fileName = "/data/xiaoju/output.txt";
+            String fileName = "/home/xiaoju/output.txt";
             File file = new File(fileName);
             BufferedReader reader = null;
             String[] data = null;

@@ -21,9 +21,9 @@ public class TestCreateBatchUpdate {
 
         CrateClient client = new CrateClient("localhost:4300");
         System.out.println("start!");
-        String updateSql = "update sf_order2 set test1 = ? where create_time=? and order_id = ?";
+        String updateSql = "update sf_order set test1 = ? where create_time=? and order_id = ?";
 
-        String fileName = "/home/xiaoju/output.txt";
+        String fileName = "/data/xiaoju/output.txt";
         //String fileName = "D:/1.txt";
         File file = new File(fileName);
         BufferedReader reader = null;
