@@ -46,9 +46,9 @@ object TestDmLocalInsert {
     }
   }
 
-  def insert(fileDir: String, host: String) {
+  def insert(fileDir: String, port: String) {
     try {
-      var client = new CrateClient(host)
+      var client = new CrateClient("localhost:" + port)
 
       var tempString: String = null
       var insertSql: StringBuilder = null
