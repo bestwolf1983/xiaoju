@@ -46,13 +46,9 @@ object TestDmLocalInsert {
     }
   }
 
-  def insert(split: String) {
+  def insert(fileDir: String, host: String) {
     try {
-      var client = new CrateClient(
-        "10.120.91.143:4300",
-        "10.120.91.26:4300",
-        "10.120.91.26:5300"
-      )
+      var client = new CrateClient(host)
 
       var tempString: String = null
       var insertSql: StringBuilder = null
@@ -88,17 +84,10 @@ object TestDmLocalInsert {
       var end = 0L
 
       var reader: BufferedReader = null
-      var fileDir = "/home/xiaoju/data/"
+      // var fileDir = "/home/xiaoju/data/"
       var files = new File(fileDir).listFiles()
 
       var startFileIndex = 0
-      if (split.equals("1")) {
-        startFileIndex = 0
-      } else if (split.equals("2")) {
-        startFileIndex = 40
-      } else if (split.equals("3")) {
-        startFileIndex = 80
-      }
 
       var endFileIndex = startFileIndex + 40
       if (endFileIndex > files.length) {
@@ -163,7 +152,6 @@ object TestDmLocalInsert {
               println("handle " + line + " records!")
             }
           }
-
           // in.close()
           reader.close()
         } catch {
@@ -184,7 +172,7 @@ object TestDmLocalInsert {
   def main (args: Array[String]) {
     // Class.forName(dbClassName)
     var start = System.currentTimeMillis()
-    insert(args(0))
+    insert(args(0),args(1))
     var end = System.currentTimeMillis()
     println("Use " + (end - start) / 1000 + "s")
   }
