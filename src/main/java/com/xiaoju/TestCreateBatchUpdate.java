@@ -21,7 +21,7 @@ public class TestCreateBatchUpdate {
 
         CrateClient client = new CrateClient("localhost:4300");
         System.out.println("start!");
-        String updateSql = "update sf_order set test1 = ? where create_time=? and order_id = ?";
+        String updateSql = "update sf_order set test400 = ? where create_time=? and order_id = ?";
 
         String fileName = "/data/xiaoju/output.txt";
         //String fileName = "D:/1.txt";
@@ -89,7 +89,7 @@ public class TestCreateBatchUpdate {
                 // temp[0] = String.valueOf(random.nextInt(10000));
                 // temp[1] = Long.valueOf(data[1].trim());
 
-                bulkArgs[(line - 1) % count] = new Object[]{ data[1].trim(), Integer.parseInt(date), Long.valueOf(data[0].trim())};
+                bulkArgs[(line - 1) % count] = new Object[]{ random.nextInt(1000), Integer.parseInt(date), Long.valueOf(data[0].trim())};
                 //bulkArgs[(line - 1) % 10] = new Object[]{String.valueOf(random.nextInt(10000)), 21696014};
                 if (line % count == 0) {
                     SQLBulkRequest bulkRequest = new SQLBulkRequest(updateSql, bulkArgs);
