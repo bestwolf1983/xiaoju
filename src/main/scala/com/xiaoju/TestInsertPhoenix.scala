@@ -127,6 +127,7 @@ object TestInsertPhoenix {
 
 
   def main(args:Array[String]): Unit = {
+    Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
     var conn = DriverManager.getConnection("jdbc:phoenix:spark80.qq,spark85.qq,spark86.qq:3333")
     insertData(conn, args(0), args(1).toInt, args(2).toInt)
 
@@ -141,10 +142,6 @@ object TestInsertPhoenix {
         map.put(fields(0).trim, fields(1).trim)
       }
     }*/
-
-
-
-
 
   }
 
