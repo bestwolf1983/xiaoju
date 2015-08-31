@@ -26,17 +26,15 @@ object TestInsertPhoenix {
     var insertSql = new StringBuilder("UPSERT INTO " + tableName)
     var lines = SfOrderSchema.schema.split("\n")
     var map = scala.collection.mutable.HashMap[String,String]()
-
+    insertSql.append("(")
     for(line <- lines) {
       if(!line.trim.equals("")) {
         var fields = line.trim.split(" ")
         map.put(fields(0).trim, fields(1).trim)
+        insertSql.append(fields(0).trim + ",")
       }
     }
-    insertSql.append("(")
-    map.foreach { x=>
-      insertSql.append(x._1.trim + ",")
-    }
+
     if(insertSql.endsWith(",")) {
       insertSql.deleteCharAt(insertSql.length - 1)
     }
