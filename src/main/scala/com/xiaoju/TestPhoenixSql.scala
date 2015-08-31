@@ -14,7 +14,7 @@ object TestPhoenixSql {
   def testParalism(sql: String, paralism: Int): Unit = {
     var startTime = System.currentTimeMillis()
     var threads = new Array[Thread](paralism)
-    (0 to paralism).foreach { i=>
+    (0 until paralism).foreach { i=>
       threads(i) = new Thread() {
         override def run(): Unit = {
           var start = System.currentTimeMillis()
