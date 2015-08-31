@@ -40,9 +40,14 @@ object TestInsertPhoenix {
     }
     insertSql.append(")")
     insertSql.append(" values(")
-    map.foreach { x=>
-      insertSql.append("?,")
+    if(columnCount > 0) {
+      (1 to columnCount).map(x=> insertSql.append("?,"))
+    } else {
+      map.foreach { x=>
+        insertSql.append("?,")
+      }
     }
+
     if(insertSql.endsWith(",")) {
       insertSql.deleteCharAt(insertSql.length - 1)
     }
@@ -88,7 +93,6 @@ object TestInsertPhoenix {
               } else {
                 ps.setLong(i + 1, item.trim.toLong)
               }
-
             } else if(lines(i).contains("varchar")) {
               ps.setString(i + 1, item.trim)
             } else if(lines(i).contains("INTEGER")) {
@@ -107,7 +111,6 @@ object TestInsertPhoenix {
           ps.addBatch()
           vrow = vrow + 1
         }
-
       }
 
       if (line % 10000 == 0) {
@@ -118,18 +121,15 @@ object TestInsertPhoenix {
         println("insert 1w records use " + (end - start) / 1000 + " s")
         start = end
       }
-
 /*      if(line % 10000 == 0) {
 
       }*/
-
 
     }
     ps.executeBatch()
     conn.commit()
 
   }
-
 
 
   def main(args:Array[String]): Unit = {
