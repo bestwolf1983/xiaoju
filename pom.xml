@@ -14,6 +14,10 @@
             <id>Akka repository</id>
             <url>http://repo.akka.io/releases</url>
         </repository>
+        <repository>
+            <id>Twitter Maven Repo</id>
+            <url>http://maven.twttr.com</url>
+        </repository>
 
 <!--           <repository>
                 <snapshots>
@@ -139,11 +143,12 @@
             <artifactId>guava</artifactId>
             <version>11.0.2</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>com.hadoop.gplcompression</groupId>
             <artifactId>hadoop-lzo</artifactId>
             <version>0.4.19</version>
-        </dependency>
+        </dependency>-->
+
 <!--        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-cli</artifactId>
