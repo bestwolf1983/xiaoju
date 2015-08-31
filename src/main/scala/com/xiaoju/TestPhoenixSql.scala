@@ -29,7 +29,7 @@ object TestPhoenixSql {
         conn.close()
         return (end - start)
       }
-    ))
+    ).toList)
     var sum = 0L
     val oddSum = futureList.map(_.sum)
     oddSum.foreach { x=>
