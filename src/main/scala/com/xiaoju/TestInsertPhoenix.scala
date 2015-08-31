@@ -128,7 +128,9 @@ object TestInsertPhoenix {
 
   def main(args:Array[String]): Unit = {
     Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
-    var conn = DriverManager.getConnection("jdbc:phoenix:spark80.qq,spark85.qq,spark86.qq:3333")
+    println("start to connect phoenix!")
+    var conn = DriverManager.getConnection("jdbc:phoenix:localhost:3333")
+    println("connected to  phoenix!")
     insertData(conn, args(0), args(1).toInt, args(2).toInt)
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
