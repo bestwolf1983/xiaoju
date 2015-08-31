@@ -29,7 +29,7 @@ object TestPhoenixSql {
           var result = statement.executeQuery(sql)
           var i = 0
           while(result.next() && i < 1) {
-            println("result: " + result.getLong(0))
+            println("result: " + result.getLong(1))
             i = i + 1
           }
           println("execute query use " + (end - start) + " ms")
