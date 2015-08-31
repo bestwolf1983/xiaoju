@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 object TestPhoenixSql {
 
   def testParalism(sql: String, paralism: Int): Unit = {
-    val futureList = Future.sequence((1 to paralism).toList.map(x=>
+    val futureList = Future.sequence((1 to paralism).map(x=>
       Future[Long] {
         var start = System.currentTimeMillis()
         var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
