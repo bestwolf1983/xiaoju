@@ -13,7 +13,7 @@ object TestPhoenixSql {
 
   def testParalism(sql: String, paralism: Int): Unit = {
     val futureList = Future.sequence((1 to paralism).toList.map(x=>
-      Future {
+      Future[Long] {
         var start = System.currentTimeMillis()
         var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
         var end = System.currentTimeMillis()
@@ -27,10 +27,15 @@ object TestPhoenixSql {
         println("execute query use " + (end - start) + " ms")
         statement.close()
         conn.close()
+        return (end - start)
       }
     ))
-
-    futureList foreach println
+    var sum = 0L
+    val oddSum = futureList.map(_.sum)
+    oddSum.foreach { x=>
+      sum  = sum + x
+    }
+    println("totally use " + sum + " ms")
   }
 
   def main(args:Array[String]): Unit = {
