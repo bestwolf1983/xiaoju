@@ -26,7 +26,12 @@ object TestPhoenixSql {
           end = System.currentTimeMillis()
           println("create statment use " + (end - start) + " ms")
           start = end
-          statement.executeQuery(sql)
+          var result = statement.executeQuery(sql)
+          var i = 0
+          while(result.next() && i < 1) {
+            println("result: " + result.getLong(0))
+            i = i + 1
+          }
           println("execute query use " + (end - start) + " ms")
           statement.close()
           conn.close()
