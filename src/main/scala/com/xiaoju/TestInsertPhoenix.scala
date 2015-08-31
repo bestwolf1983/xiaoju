@@ -129,7 +129,7 @@ object TestInsertPhoenix {
   def main(args:Array[String]): Unit = {
     Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
     println("start to connect phoenix!")
-    var conn = DriverManager.getConnection("jdbc:phoenix:localhost:3333")
+    var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
     println("connected to  phoenix!")
     insertData(conn, args(0), args(1).toInt, args(2).toInt)
 
