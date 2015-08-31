@@ -107,17 +107,25 @@ object TestInsertPhoenix {
             }
           }
           ps.addBatch()
+          vrow = vrow + 1
         }
 
       }
 
       if (line % 10000 == 0) {
+        // println("start a batch")
         ps.executeBatch
         conn.commit
         end = System.currentTimeMillis
         println("insert 1w records use " + (end - start) / 1000 + " s")
         start = end
       }
+
+/*      if(line % 10000 == 0) {
+
+      }*/
+
+
     }
     ps.executeBatch()
     conn.commit()
