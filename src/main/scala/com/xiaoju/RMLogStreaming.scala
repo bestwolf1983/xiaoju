@@ -51,8 +51,6 @@ object RMLogStreaming {
   def createStreamingContext(time: String): StreamingContext = {
 
     val sparkConf = new SparkConf().setAppName("RMLogStreaming")
-    val sc = new SparkContext(sparkConf)
-    sc.startTime
     val ssc = new StreamingContext(sparkConf, new Duration(time.toInt))
     val kafkaParams = Map[String, String](
       "metadata.broker.list" -> brokerList,
@@ -77,7 +75,7 @@ object RMLogStreaming {
       }
 
     })
-    ssc.checkpoint(checkpointDirectory)
+    // ssc.checkpoint(checkpointDirectory)
     ssc
   }
 
