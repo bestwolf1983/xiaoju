@@ -51,6 +51,8 @@ object RMLogStreaming {
   def createStreamingContext(time: String): StreamingContext = {
 
     val sparkConf = new SparkConf().setAppName("RMLogStreaming")
+    sparkConf.set("spark.dynamicAllocation.enabled", "false")
+    sparkConf.set("spark.shuffle.service.enabled", "false")
     val ssc = new StreamingContext(sparkConf, new Duration(time.toInt))
     val kafkaParams = Map[String, String](
       "metadata.broker.list" -> brokerList,
