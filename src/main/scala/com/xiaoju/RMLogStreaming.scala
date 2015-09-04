@@ -12,7 +12,7 @@ import org.apache.hadoop.mapred.{ClientCache, JobID, ResourceMgrDelegate}
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.yarn.api.records.YarnApplicationState
 import org.apache.hadoop.yarn.conf.YarnConfiguration
-import org.apache.spark.SparkConf
+import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Duration, StreamingContext}
 
@@ -42,6 +42,7 @@ object RMLogStreaming {
 
   var topic = "resourcemanager"
   var brokerList = "hdp71.qq:9099,hdp72.qq:9092,hdp73.qq:9092"
+  var zkList = "hdp71.qq:2181,hdp72.qq:2181,hdp73.qq:2181"
   var groupId = "spark-rmlog"
 
   var rmAddress = "hdp800.qq:18040"
@@ -50,6 +51,8 @@ object RMLogStreaming {
   def createStreamingContext(time: String): StreamingContext = {
 
     val sparkConf = new SparkConf().setAppName("RMLogStreaming")
+    val sc = new SparkContext(sparkConf)
+    sc.startTime
     val ssc = new StreamingContext(sparkConf, new Duration(time.toInt))
     val kafkaParams = Map[String, String](
       "metadata.broker.list" -> brokerList,
@@ -57,9 +60,10 @@ object RMLogStreaming {
     )
 
     val topicsSet = Set(topic)
+    val topicsMap = Map[String, Int](topic -> 1)
 
-    val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
-
+    //val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
+    val messages = KafkaUtils.createStream(ssc, zkList, groupId, topicsMap)
     messages.map(_._2).map(fetchMessageFromLog).filter(x=> x._1 != null).foreachRDD(rdd => {
       try {
         if (!rdd.partitions.isEmpty) {
@@ -349,7 +353,7 @@ object RMLogStreaming {
 
     val apps = client.getApplications(appTypes, java.util.EnumSet.copyOf(appStates))
     val jobs = TypeConverter.fromYarnApps(apps, getConf())
-    println("There are " + jobs.length + " jobs!")
+    //println("There are " + jobs.length + " jobs!")
     jobs
   }
 
@@ -364,7 +368,7 @@ object RMLogStreaming {
   def createYarnClient(): ResourceMgrDelegate = {
     try {
       val client = new ResourceMgrDelegate(new YarnConfiguration(getConf()))
-      println("connect to rm success!")
+      //println("connect to rm success!")
       client
     } catch {
       case e: Exception =>
@@ -403,7 +407,7 @@ object RMLogStreaming {
 
     var ssc: StreamingContext = null
     try {
-      ssc = StreamingContext.getOrCreate(checkpointDirectory, ()=> createStreamingContext(args(0)))
+      ssc = createStreamingContext(args(0))
       ssc.start()
       ssc.awaitTermination()
     }catch {

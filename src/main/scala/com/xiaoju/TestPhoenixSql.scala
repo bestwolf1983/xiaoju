@@ -32,7 +32,8 @@ object TestPhoenixSql {
             println("result: " + result.getLong(1))
             i = i + 1
           }
-          println("execute query use " + (end - start) + " ms")
+          var execEnd = System.currentTimeMillis()
+          println("execute query use " + (execEnd - start) + " ms")
           statement.close()
           conn.close()
         }
