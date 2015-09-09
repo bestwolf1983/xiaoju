@@ -12,13 +12,12 @@ object CountSmallFile {
     val sparkConf = new SparkConf().setAppName("CountSmallFile")
     val sc = new SparkContext(sparkConf)
     val conf = new Configuration()
+    val hadoopConf = new SparkHadoopConfiguration(conf)
     val fs = FileSystem.get(conf)
     var paths = fs.listStatus(new Path("/user/")).map(x=> x.getPath.toUri)
     var pathRdd = sc.parallelize(paths, paths.length)
     pathRdd.map{ uri=>
-
-      var fs = FileSystem.get(uri, conf)
-
+      var fs = FileSystem.get(uri, hadoopConf.configuration)
       def countFile(fs: FileSystem, path: Path): Long = {
         var sum: Long = 0
         var files = fs.listStatus(path)
