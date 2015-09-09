@@ -39,6 +39,6 @@ object CountSmallFile {
       }
       var sum = countFile(fs, new Path(uri))
       (uri.toString, sum)
-    }.coalesce(1).saveAsTextFile("/user/xiaoju/spark/CountSmallFile" + System.currentTimeMillis())
+    }.reduceByKey(_ + _).repartition(1).saveAsTextFile("/user/xiaoju/spark/CountSmallFile" + System.currentTimeMillis())
   }
 }
