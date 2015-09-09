@@ -9,12 +9,13 @@ import org.apache.spark.{TaskContext, SparkContext, SparkConf}
  */
 object CountSmallFile {
   def main(args: Array[String]): Unit = {
+    var scanPath: String = args(0)
     val sparkConf = new SparkConf().setAppName("CountSmallFile")
     val sc = new SparkContext(sparkConf)
     val conf = new Configuration()
     //val hadoopConf = new SparkHadoopConfiguration(conf)
     val fs = FileSystem.get(conf)
-    var paths = fs.listStatus(new Path("/user/")).map(x=> x.getPath.toUri)
+    var paths = fs.listStatus(new Path(scanPath)).map(x=> x.getPath.toUri)
     paths.foreach(uri=> println(uri.toString))
     var pathRdd = sc.parallelize(paths, paths.length)
     pathRdd.map{ uri=>
@@ -22,6 +23,7 @@ object CountSmallFile {
       def countFile(fs: FileSystem, path: Path): Long = {
         var sum: Long = 0
         var files = fs.listStatus(path)
+        println("ls " + path.getName)
         if(files != null && files.length > 0) {
           for(file <- files) {
             if(!file.getPath.getName.startsWith("_")) {
@@ -37,6 +39,7 @@ object CountSmallFile {
         }
         sum
       }
+      println("start to count:" + uri.toString)
       var sum = countFile(fs, new Path(uri))
       (uri.toString, sum)
     }.reduceByKey(_ + _).repartition(1).saveAsTextFile("/user/xiaoju/spark/CountSmallFile" + System.currentTimeMillis())
