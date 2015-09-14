@@ -135,6 +135,10 @@ object TestInsertPhoenix {
     println("start to connect phoenix!")
     var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
     println("connected to  phoenix!")
+    println("file path: " + args(0))
+    println("table name: " + args(0))
+    println("column size: " + args(2))
+    println("times: " + args(3))
     insertData(conn, args(0), args(1), args(2).toInt, args(3).toInt)
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
