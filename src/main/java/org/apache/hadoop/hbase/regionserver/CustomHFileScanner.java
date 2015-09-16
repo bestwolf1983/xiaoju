@@ -82,13 +82,13 @@ public class CustomHFileScanner {
 		
 		FileSystem fs = FileSystem.get(conf);
 		FileStatus[] files = fs.listStatus(new Path("/hbase-data/data/default/SF_ORDER/07fa8a278ba456bb9ed98be54e77e03c/0/"));
-		
+		System.out.println("has " + files.length + " files!");
 		Scan regionScan = new Scan();
 
 		regionScan.setBatch(100);
 		regionScan.setCaching(100);
 		regionScan.setMaxVersions(1);
-		regionScan.addFamily(Bytes.toBytes(0));
+		regionScan.addFamily(Bytes.toBytes("0"));
 		regionScan.setStartRow(Bytes.toBytes("0"));
 /*		regionScan.setStartRow(Bytes.toBytes("1"));
 		regionScan.setStopRow(Bytes.toBytes("3"));*/
@@ -111,6 +111,7 @@ public class CustomHFileScanner {
 	    } while(i<10);
 	    heap.close();
 	    KeyValue kv = null;
+			System.out.println("scan is over, start to print");
 	    for(Cell cell : list) {
 	    	kv = KeyValueUtil.ensureKeyValue(cell);
 	    	System.out.println(kv.toString());
