@@ -20,7 +20,7 @@ public class ReadSequeceFile {
 	public static void main(String[] args) throws IOException {
 		String pathStr = "/SF_ORDER_BK/part-m-00000";
 	    Configuration conf = new Configuration();  
-	    FileSystem fs = FileSystem.get(URI.create(pathStr), conf);  
+	    FileSystem fs = FileSystem.get(URI.create(pathStr), conf);
 	    Path path = new Path(pathStr);
 			Result valueResult = null;
 	    SequenceFile.Reader reader = null;
