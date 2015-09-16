@@ -89,7 +89,7 @@ public class CustomHFileScanner {
 		regionScan.setCaching(100);
 		regionScan.setMaxVersions(1);
 		regionScan.addFamily(Bytes.toBytes("0"));
-		regionScan.setStartRow(Bytes.toBytes("0"));
+		regionScan.setStartRow(Bytes.toBytes(0));
 /*		regionScan.setStartRow(Bytes.toBytes("1"));
 		regionScan.setStopRow(Bytes.toBytes("3"));*/
 
@@ -102,7 +102,6 @@ public class CustomHFileScanner {
 	    
 	    CustomRegionScanner heap = new CustomRegionScanner(regionScan, conf, storeFiles);
 	    //boolean exist = true;
-	    //������Ҫseek��rowkey��������reseek��Ȼ����nextһ��ȡ���rowkey����ݣ���ݻᱣ����list���档
 	    int i=0;
 	    do {
 	    	heap.next(list);
@@ -111,7 +110,7 @@ public class CustomHFileScanner {
 	    } while(i<10);
 	    heap.close();
 	    KeyValue kv = null;
-			System.out.println("scan is over, start to print");
+			System.out.println("scan is over, start to print " + list.size() + " elements!");
 	    for(Cell cell : list) {
 	    	kv = KeyValueUtil.ensureKeyValue(cell);
 	    	System.out.println(kv.toString());
