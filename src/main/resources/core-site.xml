@@ -19,8 +19,9 @@
 <configuration>
 <property>
        <name>fs.defaultFS</name>
-       <value>hdfs://mycluster</value>
- </property>
+       <value>hdfs://bigdata-arch-hdp277.bh</value>
+   </property>
+   <!--
 <property>
          <name>ha.zookeeper.quorum</name>
           <value>hdp800.qq,hdp801.qq,hdp1.qq</value>
@@ -29,7 +30,8 @@
           <name>ha.zookeeper.session-timeout.ms</name>
           <value>10000</value>
          <description>ms</description>
-</property>
+     </property>
+     -->
 <!--<property>
        <name>hadoop.tmp.dir</name>
       <value>/home/xiaoju/hadoop-tmp</value>
@@ -54,4 +56,8 @@
 	<name>io.compression.codec.lzo.class</name>
 	<value>com.hadoop.compression.lzo.LzoCodec</value>
 </property>
+<property>
+       <name>hadoop.security.authorization</name>
+  <value>true</value>
+     </property>
 </configuration>

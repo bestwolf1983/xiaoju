@@ -17,10 +17,10 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
- <property>
-       <name>fs.defaultFS</name>
-       <value>hdfs://mycluster</value>
- </property>
+    <property> 
+        <name>topology.script.file.name</name> 
+        <value>/home/xiaoju/hadoop-2.2.0/rack_aware.py</value> 
+    </property> 
  <property>
       <name>hadoop.tmp.dir</name>
       <value>/home/xiaoju/hadoop-tmp</value>
@@ -50,32 +50,35 @@
        </property>
        <property>
         <name>dfs.data.dir</name>
-        <value>/home/disk1/hadoop-data,/home/disk2/hadoop-data,/home/disk3/hadoop-data,/home/disk4/hadoop-data,/home/disk5/hadoop-data,/home/disk6/hadoop-data,/home/disk7/hadoop-data,/home/disk8/hadoop-data,/home/disk9/hadoop-data,/home/disk10/hadoop-data,/home/disk11/hadoop-data,/home/disk12/hadoop-data</value>
-     </property>
+        <value>/home/xiaoju/hadoop-data</value>
+    </property>
+    <!--
      <property>
      <name>dfs.nameservices</name>
      <value>mycluster</value>
      <description>Logical name for this newnameservice</description>
-</property>
+ </property>
+ -->
+ <!--
 <property>
      <name>dfs.ha.namenodes.mycluster</name>
      <value>nn1,nn2</value>
     <description>Unique identifiers for each NameNode in thenameservice</description>
 </property>
 <property>
-    <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+    <name>dfs.namenode.rpc-address.mycluster.nn2</name>
     <value>hdp800.qq:8020</value>
 </property>
 <property>
-     <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+     <name>dfs.namenode.rpc-address.mycluster.nn1</name>
      <value>hdp801.qq:8020</value>
 </property>
 <property>
-     <name>dfs.namenode.http-address.mycluster.nn1</name>
+     <name>dfs.namenode.http-address.mycluster.nn2</name>
     <value>hdp800.qq:50070</value>
 </property>
 <property>
-     <name>dfs.namenode.http-address.mycluster.nn2</name>
+     <name>dfs.namenode.http-address.mycluster.nn1</name>
     <value>hdp801.qq:50070</value>
 </property>
 <property>
@@ -105,17 +108,30 @@
 <property>
       <name>dfs.ha.automatic-failover.enabled</name>
       <value>true</value>
-</property>       
+  </property>
+  -->
 <property>
          <name>dfs.datanode.max.xcievers</name>
          <value>8192</value>
   </property>
   <property>
       <name>dfs.namenode.handler.count</name>
-          <value>128</value>
+          <value>256</value>
    </property>
    <property>
        	<name>dfs.datanode.handler.count</name>
-   	<value>64</value>
+   	<value>128</value>
    </property>
+    <property>
+          <name>dfs.balance.bandwidthPerSec</name>
+          <value>31457280</value>
+   </property>  
+   <property>
+        <name>dfs.datanode.socket.write.timeout</name>
+        <value>4800000</value>
+    </property>
+    <property>
+      <name>ipc.client.connect.max.retries</name>
+            <value>1</value>
+      </property>
   </configuration> 
