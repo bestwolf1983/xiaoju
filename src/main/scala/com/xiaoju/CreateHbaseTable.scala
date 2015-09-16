@@ -27,9 +27,9 @@ object CreateHbaseTable {
     family.setDataBlockEncoding(DataBlockEncoding.PREFIX_TREE)
     var tableDescriptor = new HTableDescriptor(tableName)
     tableDescriptor.addFamily(family)
-    var points: Array[String] = Array("01", "02", "03" , "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19")
+    var points: Array[Long] = Array(11, 12, 13 , 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
     var splitPoints:Array[Array[Byte]] = points.map(x=> Bytes.toBytes(x))
-    hBaseAdmin.createTable(tableDescriptor)
+    hBaseAdmin.createTable(tableDescriptor, splitPoints)
   }
 
 }
