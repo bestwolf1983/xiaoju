@@ -26,9 +26,13 @@ object TestPhoenixSql {
           end = System.currentTimeMillis()
           println("create statment use " + (end - start) + " ms")
           start = end
+
           var result = statement.executeQuery(sql)
+          var meta = result.getMetaData()
+          var cols = meta.getColumnCount()
           var i = 0
-          while(result.next() && i < 1) {
+
+          while(result.next()) {
             println("result: " + result.getLong(1))
             i = i + 1
           }
