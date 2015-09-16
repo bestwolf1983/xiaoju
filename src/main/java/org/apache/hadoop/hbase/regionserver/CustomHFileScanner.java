@@ -88,7 +88,7 @@ public class CustomHFileScanner {
 		regionScan.setBatch(100);
 		regionScan.setCaching(100);
 		regionScan.setMaxVersions(1);
-		regionScan.addFamily(Bytes.toBytes("0"));
+		regionScan.addFamily(Bytes.toBytes(0));
 		regionScan.setStartRow(Bytes.toBytes(0));
 /*		regionScan.setStartRow(Bytes.toBytes("1"));
 		regionScan.setStopRow(Bytes.toBytes("3"));*/
