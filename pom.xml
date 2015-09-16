@@ -87,19 +87,20 @@
                                 </filter>
                             </filters>
                             <transformers>
-
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>reference.conf</resource>
                                 </transformer>
-
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>com.xiaoju.RMLogStreaming</Main-Class>
                                     </manifestEntries>
                                 </transformer>
-
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.hadoop.fs.FileSystem</resource>
+                                </transformer>
                             </transformers>
                         </configuration>
                     </execution>
@@ -107,6 +108,7 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>io.crate</groupId>
