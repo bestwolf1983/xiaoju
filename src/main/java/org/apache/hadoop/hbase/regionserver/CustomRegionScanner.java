@@ -99,7 +99,7 @@ public class CustomRegionScanner implements RegionScanner {
 		// by the filter to operate (scanners list) and all others
 		// (joinedScanners list).
 		List<KeyValueScanner> scanners = new ArrayList<KeyValueScanner>();
-		ScanInfo scanInfo = new ScanInfo(scan.getFamilies()[0], 0, 1,
+		ScanInfo scanInfo = new ScanInfo(scan.getFamilies()[0], 0, 3,
 			      Long.MAX_VALUE, KeepDeletedCells.FALSE, 0, KeyValue.COMPARATOR);
 		/*scanners.add(new CustomStoreScanner(null, scanInfo, scan, scan.getFamilyMap().get(scan.getFamilies()[0]),
 				conf, files));*/
