@@ -64,12 +64,8 @@
       <url>http://repo.akka.io/releases</url>
     </repository>
     <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>bintray</name>
-      <url>http://dl.bintray.com/crate/crate</url>
+      <id>Twitter Maven Repo</id>
+      <url>http://maven.twttr.com</url>
     </repository>
   </repositories>
   <dependencies>
@@ -86,16 +82,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>lz4</artifactId>
           <groupId>net.jpountz.lz4</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snappy-java</artifactId>
-          <groupId>org.xerial.snappy</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -158,10 +146,6 @@
           <groupId>org.apache.spark</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>jets3t</artifactId>
-          <groupId>net.java.dev.jets3t</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>curator-recipes</artifactId>
           <groupId>org.apache.curator</groupId>
         </exclusion>
@@ -178,23 +162,11 @@
           <groupId>org.apache.commons</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>jsr305</artifactId>
-          <groupId>com.google.code.findbugs</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jul-to-slf4j</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jcl-over-slf4j</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>log4j</artifactId>
-          <groupId>log4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
@@ -204,10 +176,6 @@
         <exclusion>
           <artifactId>RoaringBitmap</artifactId>
           <groupId>org.roaringbitmap</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-net</artifactId>
-          <groupId>commons-net</groupId>
         </exclusion>
         <exclusion>
           <artifactId>akka-remote_2.10</artifactId>
@@ -220,14 +188,6 @@
         <exclusion>
           <artifactId>json4s-jackson_2.10</artifactId>
           <groupId>org.json4s</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jersey-server</artifactId>
-          <groupId>com.sun.jersey</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jersey-core</artifactId>
-          <groupId>com.sun.jersey</groupId>
         </exclusion>
         <exclusion>
           <artifactId>mesos</artifactId>
@@ -286,56 +246,12 @@
           <groupId>net.sf.py4j</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snappy-java</artifactId>
-          <groupId>org.xerial.snappy</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>lz4</artifactId>
           <groupId>net.jpountz.lz4</groupId>
         </exclusion>
         <exclusion>
           <artifactId>unused</artifactId>
           <groupId>org.spark-project.spark</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client</artifactId>
-      <version>2.2.0</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hadoop-common</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-hdfs</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-mapreduce-client-app</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-yarn-api</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-          <groupId>org.apache.hadoop</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hadoop-annotations</artifactId>
-          <groupId>org.apache.hadoop</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -382,28 +298,12 @@
           <groupId>org.spark-project.hive</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>commons-httpclient</artifactId>
-          <groupId>commons-httpclient</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>hive-exec</artifactId>
           <groupId>org.spark-project.hive</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>httpclient</artifactId>
-          <groupId>org.apache.httpcomponents</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jackson-mapper-asl</artifactId>
-          <groupId>org.codehaus.jackson</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>hive-serde</artifactId>
           <groupId>org.spark-project.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>avro</artifactId>
-          <groupId>org.apache.avro</groupId>
         </exclusion>
         <exclusion>
           <artifactId>avro-mapred</artifactId>
