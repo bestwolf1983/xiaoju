@@ -16,8 +16,8 @@ object CreateHbaseTable {
     var conf = HBaseConfiguration.create()
     var hBaseAdmin = new HBaseAdmin(conf)
     if (hBaseAdmin.tableExists(tableName)) {
-/*      hBaseAdmin.disableTable(tableName)
-      hBaseAdmin.deleteTable(tableName)*/
+      hBaseAdmin.disableTable(tableName)
+      hBaseAdmin.deleteTable(tableName)
       println(tableName + " is exist,detele....")
     }
     var family = new HColumnDescriptor("0")
