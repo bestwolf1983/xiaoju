@@ -21,15 +21,23 @@ public class TestPutData {
       b[i] = new Long(temp & 0xff).byteValue();
       temp = temp >> 8;
     }
+/*    byte head = b[0];
+    int h = (int)head;
+    h = h == 0?1:0;
+    head = (byte)h;*/
+    b[0] = (byte)(b[0] ^ 0x80);
+    //b[0] = head;
     return b;
   }
 
   public static void main(String[] args) throws IOException {
+/*    byte[] b = longToByte(0);
+    System.out.println(b);*/
 
-    byte[] a = Bytes.toBytes("20150917");
+    /*byte[] a = Bytes.toBytes("20150917");
     byte[] b = Bytes.toBytes(20150917);
     boolean result = a.equals(b);
-    System.out.println(result);
+    System.out.println(result);*/
 
     System.out.println("App start!");
     String tableName = args[0];
