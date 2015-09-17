@@ -13,6 +13,17 @@ import java.io.IOException;
  * Created by cenyuhai on 2015/9/17.
  */
 public class TestPutData {
+
+  public static byte[] longToByte(long number) {
+    long temp = number;
+    byte[] b = new byte[8];
+    for (int i = 0; i < b.length; i++) {
+      b[i] = new Long(temp & 0xff).byteValue();
+      temp = temp >> 8;
+    }
+    return b;
+  }
+
   public static void main(String[] args) throws IOException {
 
     byte[] a = Bytes.toBytes("20150917");
@@ -24,7 +35,7 @@ public class TestPutData {
     String tableName = args[0];
     Configuration conf = HBaseConfiguration.create();
     HTable table = new HTable(conf, tableName);
-    Put put = new Put(Bytes.toBytes("20000"));
+    Put put = new Put(Bytes.toBytes("30000"));
     byte[] family = Bytes.toBytes("0");
     byte[] order_id = Bytes.toBytes("ORDER_ID");
     byte[] order_type =  Bytes.toBytes("ORDER_TYPE");
@@ -32,7 +43,7 @@ public class TestPutData {
     byte[] id = Bytes.toBytes("ID");
 
     put.add(family, order_id, Bytes.toBytes(21111111111L));
-    put.add(family, order_type, Bytes.toBytes(0));
+    put.add(family, order_type, longToByte(0L));
     put.add(family, p_ip, Bytes.toBytes("127.0.0.1"));
     put.add(family, id, Bytes.toBytes(20000000L));
 
