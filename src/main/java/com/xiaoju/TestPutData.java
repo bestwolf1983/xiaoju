@@ -1,11 +1,13 @@
 package com.xiaoju;
 
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
-
+import org.apache.phoenix.schema.SortOrder;
+import org.apache.phoenix.schema.types.PLong;
 import java.io.IOException;
 
 
@@ -21,49 +23,29 @@ public class TestPutData {
       b[i] = new Long(temp & 0xff).byteValue();
       temp = temp >> 8;
     }
-/*    byte head = b[0];
-    int h = (int)head;
-    h = h == 0?1:0;
-    head = (byte)h;*/
+
     b[0] = (byte)(b[0] ^ 0x80);
-    //b[0] = head;
     return b;
   }
 
   public static void main(String[] args) throws IOException {
-/*    byte[] b = longToByte(0);
-    System.out.println(b);*/
-
-    /*byte[] a = Bytes.toBytes("20150917");
-    byte[] b = Bytes.toBytes(20150917);
-    boolean result = a.equals(b);
-    System.out.println(result);*/
 
     System.out.println("App start!");
     String tableName = args[0];
     Configuration conf = HBaseConfiguration.create();
     HTable table = new HTable(conf, tableName);
-    Put put = new Put(Bytes.toBytes(30000000L));
+    Put put = new Put(Bytes.toBytes(50000000L));
     byte[] family = Bytes.toBytes("0");
     byte[] order_id = Bytes.toBytes("ORDER_ID");
     byte[] order_type =  Bytes.toBytes("ORDER_TYPE");
     byte[] p_ip = Bytes.toBytes("P_IP");
     byte[] id = Bytes.toBytes("ID");
     put.add(family, order_id, Bytes.toBytes(21111111111L));
-    put.add(family, order_type, longToByte(-123445L));
+    put.add(family, order_type, PhoenixTypeUtil.toBytes(-123445L));
     put.add(family, p_ip, Bytes.toBytes("127.0.0.1"));
-    put.add(family, id, Bytes.toBytes(30000000L));
-
-
-    Put put1 = new Put(Bytes.toBytes(40000000L));
-
-    put1.add(family, order_id, Bytes.toBytes(21111111111L));
-    put1.add(family, order_type, longToByte(123455L));
-    put1.add(family, p_ip, Bytes.toBytes("127.0.0.1"));
-    put1.add(family, id, Bytes.toBytes(40000000L));
+    put.add(family, id, Bytes.toBytes(50000000L));
 
     table.put(put);
-    table.put(put1);
     table.flushCommits();
     table.close();
     System.out.println("Put complete!");
