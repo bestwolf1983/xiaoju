@@ -31,8 +31,8 @@ public class TestPutData {
     byte[] p_ip = Bytes.toBytes("P_IP");
     byte[] id = Bytes.toBytes("ID");
 
-    put.add(family, order_id, Bytes.toBytes("2222222"));
-    put.add(family, order_type, Bytes.toBytes("0"));
+    put.add(family, order_id, Bytes.toBytes(11111111111L));
+    put.add(family, order_type, Bytes.toBytes(0));
     put.add(family, p_ip, Bytes.toBytes("127.0.0.1"));
     put.add(family, id, Bytes.toBytes("10000000"));
 
