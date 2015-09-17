@@ -35,13 +35,12 @@ public class TestPutData {
     String tableName = args[0];
     Configuration conf = HBaseConfiguration.create();
     HTable table = new HTable(conf, tableName);
-    Put put = new Put(Bytes.toBytes("30000"));
+    Put put = new Put(Bytes.toBytes(20000000L));
     byte[] family = Bytes.toBytes("0");
     byte[] order_id = Bytes.toBytes("ORDER_ID");
     byte[] order_type =  Bytes.toBytes("ORDER_TYPE");
     byte[] p_ip = Bytes.toBytes("P_IP");
     byte[] id = Bytes.toBytes("ID");
-
     put.add(family, order_id, Bytes.toBytes(21111111111L));
     put.add(family, order_type, longToByte(0L));
     put.add(family, p_ip, Bytes.toBytes("127.0.0.1"));
