@@ -24,13 +24,13 @@ public class ReadSequeceFile {
 	    Path path = new Path(pathStr);
 			Result valueResult = null;
 	    SequenceFile.Reader reader = null;
-	    try {  
+	    try {
 	      reader = new SequenceFile.Reader(fs, path, conf);
 	      ImmutableBytesWritable key = (ImmutableBytesWritable)  
 	        ReflectionUtils.newInstance(reader.getKeyClass(), conf);
 	      Writable value = (Writable)
-	        ReflectionUtils.newInstance(reader.getValueClass(), conf);//ͬ��  
-	      long position = reader.getPosition();  
+	        ReflectionUtils.newInstance(reader.getValueClass(), conf);
+	      long position = reader.getPosition();
 	     
 	      while (reader.next(key, value)) {
 					valueResult = (Result)value;
