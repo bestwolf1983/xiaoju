@@ -96,8 +96,10 @@ object TestInsertPhoenix {
                   ps.setLong(i + 1, item.trim.toLong)
                 }
               } else if(lines(i).contains("varchar")) {
-                if(lines(i).contains("?")) {
-                  ps.setString(i + 1, "?")
+                if(lines(i).toLowerCase().contains("d_suuid")) {
+                  if(item.trim.contains("?") || item.trim.length > 100) {
+                    ps.setString(i + 1, "")
+                  }
                 } else {
                   ps.setString(i + 1, item.trim)
                 }
