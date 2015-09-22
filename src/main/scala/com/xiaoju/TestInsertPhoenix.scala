@@ -124,8 +124,14 @@ object TestInsertPhoenix {
 
       if (line % 10000 == 0) {
         // println("start a batch")
-        ps.executeBatch
-        conn.commit
+        try {
+          ps.executeBatch
+          conn.commit
+        } catch {
+          case e: Exception =>
+            e.printStackTrace()
+        }
+
         end = System.currentTimeMillis
         println("insert 1w records use " + (end - start) / 1000 + " s")
         start = end
