@@ -99,6 +99,8 @@ object TestInsertPhoenix {
                 if(lines(i).toLowerCase().contains("d_suuid")) {
                   if(item.trim.contains("?") || item.trim.length > 100) {
                     ps.setString(i + 1, "")
+                  } else {
+                    ps.setString(i + 1, item.trim)
                   }
                 } else {
                   ps.setString(i + 1, item.trim)
