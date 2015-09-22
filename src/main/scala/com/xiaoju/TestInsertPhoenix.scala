@@ -87,15 +87,15 @@ object TestInsertPhoenix {
           ps.setInt(1, date.toInt)
           i = 1
           for(item <- data) {
-            if(lines(i).contains("bigint")) {
+            if(lines(i-1).contains("bigint")) {
               if(i == 1) {
                 ps.setLong(i + 1, item.trim.toLong + vrow * 100000000)
               } else {
                 ps.setLong(i + 1, item.trim.toLong)
               }
-            } else if(lines(i).contains("varchar")) {
+            } else if(lines(i-1).contains("varchar")) {
               ps.setString(i + 1, item.trim)
-            } else if(lines(i).contains("INTEGER")) {
+            } else if(lines(i-1).contains("INTEGER")) {
               ps.setInt(i + 1, item.trim.toInt)
             }
             i = i + 1
