@@ -5,7 +5,7 @@ package com.xiaoju
  */
 object SfOrderSchema {
   var schema =
-    """create_date bigint(20) not null,
+    """create_date INTEGER not null,
       |        order_id bigint(20) not null,
       |        order_type INTEGER,
       |        pid bigint(20),

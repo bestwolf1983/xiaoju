@@ -88,7 +88,7 @@ object TestInsertPhoenix {
           i = 1
           for(item <- data) {
             if(lines(i).contains("bigint")) {
-              if(i == 2) {
+              if(i == 1) {
                 ps.setLong(i + 1, item.trim.toLong + vrow * 100000000)
               } else {
                 ps.setLong(i + 1, item.trim.toLong)
