@@ -85,18 +85,21 @@ object TestInsertPhoenix {
         // 造数据
         while(vrow < times) {
           ps.setInt(1, date.toInt)
-          i = 1
+          i = 0
           for(item <- data) {
-            if(lines(i-1).contains("bigint")) {
-              if(i == 1) {
-                ps.setLong(i + 1, item.trim.toLong + vrow * 100000000)
-              } else {
-                ps.setLong(i + 1, item.trim.toLong)
+            // skip the first col
+            if(i > 0) {
+              if(lines(i).contains("bigint")) {
+                if(i == 1) {
+                  ps.setLong(i + 1, item.trim.toLong + vrow * 100000000)
+                } else {
+                  ps.setLong(i + 1, item.trim.toLong)
+                }
+              } else if(lines(i).contains("varchar")) {
+                ps.setString(i + 1, item.trim)
+              } else if(lines(i).contains("INTEGER")) {
+                ps.setInt(i + 1, item.trim.toInt)
               }
-            } else if(lines(i-1).contains("varchar")) {
-              ps.setString(i + 1, item.trim)
-            } else if(lines(i-1).contains("INTEGER")) {
-              ps.setInt(i + 1, item.trim.toInt)
             }
             i = i + 1
           }
