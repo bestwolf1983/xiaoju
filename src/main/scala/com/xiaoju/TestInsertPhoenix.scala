@@ -84,7 +84,7 @@ object TestInsertPhoenix {
         vrow = 0
         // 造数据
         while(vrow < times) {
-          ps.setLong(1, date.toLong)
+          ps.setInt(1, date.toInt)
           i = 1
           for(item <- data) {
             if(lines(i).contains("bigint")) {
@@ -133,7 +133,7 @@ object TestInsertPhoenix {
   def main(args:Array[String]): Unit = {
     Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
     println("start to connect phoenix!")
-    var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
+    var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
     println("connected to  phoenix!")
     println("file path: " + args(0))
     println("table name: " + args(1))
