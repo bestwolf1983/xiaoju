@@ -96,7 +96,11 @@ object TestInsertPhoenix {
                   ps.setLong(i + 1, item.trim.toLong)
                 }
               } else if(lines(i).contains("varchar")) {
-                ps.setString(i + 1, item.trim)
+                if(lines(i).contains("?")) {
+                  ps.setString(i + 1, "?")
+                } else {
+                  ps.setString(i + 1, item.trim)
+                }
               } else if(lines(i).contains("INTEGER")) {
                 ps.setInt(i + 1, item.trim.toInt)
               }
