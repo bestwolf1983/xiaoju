@@ -186,7 +186,7 @@ object TestCreateAndInsertPhoenix {
     println("table name: " + args(1))
     println("column size: " + args(2))
     println("times: " + args(3))
-    createTable(conn, args(0),args(2).toInt)
+    createTable(conn, args(1),args(2).toInt)
     insertData(conn, args(0), args(1), args(2).toInt, args(3).toInt)
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
