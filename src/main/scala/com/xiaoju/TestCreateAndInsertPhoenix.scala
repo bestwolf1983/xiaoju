@@ -17,7 +17,7 @@ object TestCreateAndInsertPhoenix {
     var colsStrBuild = new StringBuilder(",")
     var i = 0
     while(i < cols) {
-      colsStrBuild.append(s"test${i}},")
+      colsStrBuild.append(s"test${i}} INTEGER,")
       i = i + 1
     }
 
@@ -141,7 +141,7 @@ object TestCreateAndInsertPhoenix {
           // 补充列数
           if(columnCount > 0) {
             while(i < columnCount) {
-              ps.setLong(i, random.nextLong())
+              ps.setInt(i, random.nextInt())
               i = i + 1
             }
           }
