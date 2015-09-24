@@ -146,7 +146,6 @@ object TestSparkCreateAndInsertPhoenix {
               n = n + 1
             }
           }
-          println("ADD BATCH")
           ps.addBatch()
           line = line + 1
           vrow = vrow + 1
