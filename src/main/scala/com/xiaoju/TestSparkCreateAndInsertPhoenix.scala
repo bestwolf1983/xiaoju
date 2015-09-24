@@ -146,6 +146,7 @@ object TestSparkCreateAndInsertPhoenix {
               n = n + 1
             }
           }
+          println("ADD BATCH")
           ps.addBatch()
           line = line + 1
           vrow = vrow + 1
@@ -153,6 +154,7 @@ object TestSparkCreateAndInsertPhoenix {
           if (line % 10000 == 0) {
             // println("start a batch")
             try {
+              println("insert 1w records")
               ps.executeBatch
               conn.commit
             } catch {
@@ -183,18 +185,18 @@ object TestSparkCreateAndInsertPhoenix {
     println("start to connect phoenix!")
     var createTableConn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
     println("connected to  phoenix!")
-    println("table name: " + args(0))
+    /*println("table name: " + args(0))
     println("column size: " + args(1))
-    println("times: " + args(2))
-    createTable(createTableConn, args(0),args(1).toInt)
+    println("times: " + args(2))*/
+    createTable(createTableConn, "SF_ORDER2",1000)
     var sparkConf = new SparkConf().setAppName("spark phoenix")
     var sc = new SparkContext(sparkConf)
     var inputfile = sc.textFile("/output.txt")
     inputfile.foreachPartition{iter=>
       Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
-      println("start to connect phoenix!")
+      println("for each partition!")
       var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
-      insertData(iter, conn, args(0), args(1).toInt, args(2).toInt)
+      insertData(iter, conn, "SF_ORDER2", 1000, 1)
     }
 
 
