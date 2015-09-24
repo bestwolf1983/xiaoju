@@ -143,7 +143,7 @@ object TestCreateAndInsertPhoenix {
           var n = 0
           if(columnCount > 0) {
             while(n < columnCount) {
-              ps.setInt(i + 1 + n, random.nextInt())
+              ps.setInt(i + n, random.nextInt())
               n = n + 1
             }
           }
