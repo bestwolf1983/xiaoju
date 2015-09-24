@@ -35,7 +35,7 @@ object TestCreateAndInsertPhoenix {
     d_arrived_datatype INTEGER, d_arrived_networktype varchar(100), d_arrived_time varchar, order_status INTEGER,
     cancel_time varchar, contact_type INTEGER, promoter INTEGER, contact_time varchar, complain_type INTEGER, complain_time varchar,
     remark varchar(500) , var1 INTEGER,var2 varchar(50) ,create_time varchar, update_time varchar, last_edit_time varchar ${colsStrBuild.toString}
-    CONSTRAINT pk PRIMARY KEY (create_date, order_id)) SALT_BUCKETS = 100, BLOOMFILTER='ROW', DATA_BLOCK_ENCODING='PREFIX_TREE', VERSIONS=1;
+    CONSTRAINT pk PRIMARY KEY (create_date, order_id)) SALT_BUCKETS = 100, BLOOMFILTER='ROW', DATA_BLOCK_ENCODING='PREFIX_TREE', VERSIONS=1
     """
     println(createTableSql)
     var statement = conn.createStatement()
