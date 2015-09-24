@@ -18,7 +18,7 @@ object TestPhoenixSql {
       threads(i) = new Thread() {
         override def run(): Unit = {
           var start = System.currentTimeMillis()
-          var conn = DriverManager.getConnection("jdbc:phoenix:localhost:2181")
+          var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
           var end = System.currentTimeMillis()
           println("connect to server use " + (end - start) + " ms")
           start = end

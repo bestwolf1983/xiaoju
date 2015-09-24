@@ -69,13 +69,13 @@ object TestInsertPhoenix {
     var createDate: Date = null
     var ps = conn.prepareStatement(insertSql.toString)
     var i = 0
-    var line = 0
+    var line = 1
     var start: Long = System.currentTimeMillis
     var vrow = 0
     var random = new Random
     println("start to insert data!")
     while ((tempString = reader.readLine()) != null) {
-      line = line + 1
+      //line = line + 1
       data = tempString.split("\t")
       createDate = timeFormat.parse(data(data.length - 1))
       date = dateFormat.format(createDate)
@@ -96,11 +96,7 @@ object TestInsertPhoenix {
                   ps.setLong(i + 1, item.trim.toLong)
                 }
               } else if(lines(i).contains("varchar")) {
-                if(lines(i).toLowerCase().contains("d_suuid")) {
-                    ps.setString(i + 1, "")
-                } else {
                   ps.setString(i + 1, item.trim)
-                }
               } else if(lines(i).contains("INTEGER")) {
                 ps.setInt(i + 1, item.trim.toInt)
               }
@@ -116,24 +112,27 @@ object TestInsertPhoenix {
             }
           }
           ps.addBatch()
+          line = line + 1
           vrow = vrow + 1
+
+          if (line % 10000 == 0) {
+            // println("start a batch")
+            try {
+              ps.executeBatch
+              conn.commit
+            } catch {
+              case e: Exception =>
+                e.printStackTrace()
+            }
+
+            end = System.currentTimeMillis
+            println("insert 1w records use " + (end - start) / 1000 + " s")
+            start = end
+          }
         }
       }
 
-      if (line % 10000 == 0) {
-        // println("start a batch")
-        try {
-          ps.executeBatch
-          conn.commit
-        } catch {
-          case e: Exception =>
-            e.printStackTrace()
-        }
 
-        end = System.currentTimeMillis
-        println("insert 1w records use " + (end - start) / 1000 + " s")
-        start = end
-      }
 /*      if(line % 10000 == 0) {
 
       }*/
