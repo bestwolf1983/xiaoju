@@ -37,6 +37,7 @@ object TestCreateAndInsertPhoenix {
     remark varchar(500) , var1 INTEGER,var2 varchar(50) ,create_time varchar, update_time varchar, last_edit_time varchar ${colsStrBuild.toString}
     CONSTRAINT pk PRIMARY KEY (create_date, order_id)) SALT_BUCKETS = 100, BLOOMFILTER='ROW', DATA_BLOCK_ENCODING='PREFIX_TREE', VERSIONS=1;
     """
+    println(createTableSql)
     var statement = conn.createStatement()
     statement.execute(createTableSql)
     println("create table success")
