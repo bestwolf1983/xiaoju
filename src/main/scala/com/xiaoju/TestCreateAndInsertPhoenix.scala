@@ -150,7 +150,7 @@ object TestCreateAndInsertPhoenix {
           line = line + 1
           vrow = vrow + 1
 
-          if (line % 10000 == 0) {
+          if (line % 100 == 0) {
             // println("start a batch")
             try {
               ps.executeBatch
@@ -159,10 +159,11 @@ object TestCreateAndInsertPhoenix {
               case e: Exception =>
                 e.printStackTrace()
             }
-
-            end = System.currentTimeMillis
-            println("insert 1w records use " + (end - start) / 1000 + " s")
-            start = end
+            if(line % 10000 == 0) {
+              end = System.currentTimeMillis
+              println("insert 1w records use " + (end - start) / 1000 + " s")
+              start = end
+            }
           }
         }
       }
@@ -187,7 +188,7 @@ object TestCreateAndInsertPhoenix {
     println("table name: " + args(1))
     println("column size: " + args(2))
     println("times: " + args(3))
-    //createTable(conn, args(1),args(2).toInt)
+    createTable(conn, args(1),args(2).toInt)
     insertData(conn, args(0), args(1), args(2).toInt, args(3).toInt)
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
