@@ -5,12 +5,14 @@ import java.sql.{Connection, DriverManager}
 import java.text.SimpleDateFormat
 import java.util.Date
 
+import org.apache.spark.{SparkContext, SparkConf}
+
 import scala.util.Random
 
 /**
  * Created by cenyuhai on 2015/8/28.
  */
-object TestCreateAndInsertPhoenix {
+object TestSparkCreateAndInsertPhoenix {
 
 
   def createTable(conn: Connection, tableName: String, cols: Int): Unit = {
@@ -50,7 +52,7 @@ object TestCreateAndInsertPhoenix {
    * @param columnCount 列的个数，插入一些列进行测试列数对查询是否有影响
    * @param times 现有数据的倍数，用现有数据构造一些数据来测试数据量对查询的影响,必须是10的公约数，比如1,2,5,10等
    */
-  def insertData(conn: Connection, filePath: String, tableName: String, columnCount: Int, times: Int): Unit = {
+  def insertData(iter: Iterator[String], conn: Connection, filePath: String, tableName: String, columnCount: Int, times: Int): Unit = {
 
     // region 拼接sql
     var insertSql = new StringBuilder("UPSERT INTO " + tableName)
@@ -108,7 +110,8 @@ object TestCreateAndInsertPhoenix {
     var vrow = 0
     var random = new Random
     println("start to insert data!")
-    while ((tempString = reader.readLine()) != null) {
+    for(tempString <- iter) {
+    //while ((tempString = reader.readLine()) != null) {
       //line = line + 1
       data = tempString.split("\t")
       createDate = timeFormat.parse(data(data.length - 1))
@@ -150,7 +153,7 @@ object TestCreateAndInsertPhoenix {
           line = line + 1
           vrow = vrow + 1
 
-          if (line % 50000 == 0) {
+          if (line % 10000 == 0) {
             // println("start a batch")
             try {
               ps.executeBatch
@@ -161,13 +164,12 @@ object TestCreateAndInsertPhoenix {
             }
             //if(line % 50000 == 0) {
               end = System.currentTimeMillis
-              println("insert 5w records use " + (end - start) / 1000 + " s")
+              println("insert 1w records use " + (end - start) / 1000 + " s")
               start = end
             //}
           }
         }
       }
-
 
 /*      if(line % 10000 == 0) {
 
@@ -182,14 +184,23 @@ object TestCreateAndInsertPhoenix {
 
     Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
     println("start to connect phoenix!")
-    var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
+    var createTableConn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
     println("connected to  phoenix!")
     println("file path: " + args(0))
     println("table name: " + args(1))
     println("column size: " + args(2))
     println("times: " + args(3))
-    createTable(conn, args(1),args(2).toInt)
-    insertData(conn, args(0), args(1), args(2).toInt, args(3).toInt)
+    createTable(createTableConn, args(1),args(2).toInt)
+    var sparkConf = new SparkConf().setAppName("spark phoenix")
+    var sc = new SparkContext(sparkConf)
+    var inputfile = sc.textFile("/output.txt")
+    inputfile.foreachPartition{iter=>
+      Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
+      println("start to connect phoenix!")
+      var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
+      insertData(iter, conn, args(0), args(1), args(2).toInt, args(3).toInt)
+    }
+
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
     //var conn = DriverManager.getConnection("jdbc:phoenix:spark80.qq,spark85.qq,spark86.qq:3333")
