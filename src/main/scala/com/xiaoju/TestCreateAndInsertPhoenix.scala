@@ -140,10 +140,11 @@ object TestCreateAndInsertPhoenix {
           }
 
           // 补充列数
+          var n = 0
           if(columnCount > 0) {
-            while(i < columnCount) {
-              ps.setInt(i, random.nextInt())
-              i = i + 1
+            while(n < columnCount) {
+              ps.setInt(i + n, random.nextInt())
+              n = n + 1
             }
           }
           ps.addBatch()
@@ -187,7 +188,7 @@ object TestCreateAndInsertPhoenix {
     println("table name: " + args(1))
     println("column size: " + args(2))
     println("times: " + args(3))
-    createTable(conn, args(1),args(2).toInt)
+    //createTable(conn, args(1),args(2).toInt)
     insertData(conn, args(0), args(1), args(2).toInt, args(3).toInt)
 
     // Class.forName("com.salesforce.phoenix.jdbc.PhoenixDriver")
