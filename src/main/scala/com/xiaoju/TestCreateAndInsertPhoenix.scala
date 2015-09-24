@@ -18,6 +18,7 @@ object TestCreateAndInsertPhoenix {
     var i = 0
     while(i < cols) {
       colsStrBuild.append(s"test${i}},")
+      i = i + 1
     }
 
     var createTableSql = s"""CREATE TABLE ${tableName} (
@@ -66,6 +67,7 @@ object TestCreateAndInsertPhoenix {
     var j = 0
     while(j < columnCount) {
       insertSql.append(s"test${j}},")
+      j =  j + 1
     }
 
     if(insertSql.endsWith(",")) {
