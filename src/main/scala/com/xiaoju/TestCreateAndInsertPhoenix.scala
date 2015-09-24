@@ -17,11 +17,11 @@ object TestCreateAndInsertPhoenix {
     var colsStrBuild = new StringBuilder(",")
     var i = 0
     while(i < cols) {
-      colsStrBuild.append(s"test${i}} INTEGER,")
+      colsStrBuild.append(s"test${i} INTEGER,")
       i = i + 1
     }
 
-    var createTableSql = s"""CREATE TABLE ${tableName} (
+    var createTableSql = s""" CREATE TABLE ${tableName} (
     create_date INTEGER not null, order_id bigint(20) not null, order_type INTEGER, pid bigint(20),
     city_id bigint(20),timeout bigint(20),p_phone_num varchar(20),p_create_time varchar,
     p_setup_time varchar,p_ip varchar(100),p_imei varchar(50) ,p_suuid varchar(100) ,p_alipay_zhenshen varchar(128) ,p_alipay_account varchar(128) ,
@@ -67,7 +67,7 @@ object TestCreateAndInsertPhoenix {
 
     var j = 0
     while(j < columnCount) {
-      insertSql.append(s"test${j}},")
+      insertSql.append(s"test${j},")
       j =  j + 1
     }
 
