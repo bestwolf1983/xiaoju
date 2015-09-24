@@ -155,7 +155,7 @@ object TestSparkCreateAndInsertPhoenix {
             try {
               println("insert 1w records")
               ps.executeBatch
-              conn.commit
+              //conn.commit
             } catch {
               case e: Exception =>
                 e.printStackTrace()
@@ -192,7 +192,7 @@ object TestSparkCreateAndInsertPhoenix {
     var sc = new SparkContext(sparkConf)
     var inputfile = sc.textFile("/output.txt")
     inputfile.foreachPartition{iter=>
-      Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
+      //Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
       println("for each partition!")
       var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
       insertData(iter, conn, "SF_ORDER2", 1000, 1)
