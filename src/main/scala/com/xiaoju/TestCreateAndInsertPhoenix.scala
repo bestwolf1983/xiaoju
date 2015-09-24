@@ -76,12 +76,11 @@ object TestCreateAndInsertPhoenix {
     }
     insertSql.append(")")
     insertSql.append(" values(")
+    map.foreach { x=>
+      insertSql.append("?,")
+    }
     if(columnCount > 0) {
       (1 to columnCount).map(x=> insertSql.append("?,"))
-    } else {
-      map.foreach { x=>
-        insertSql.append("?,")
-      }
     }
 
     if(insertSql.endsWith(",")) {
@@ -143,7 +142,7 @@ object TestCreateAndInsertPhoenix {
           var n = 0
           if(columnCount > 0) {
             while(n < columnCount) {
-              ps.setInt(i + n, random.nextInt())
+              ps.setInt(i + 1 + n, random.nextInt())
               n = n + 1
             }
           }
