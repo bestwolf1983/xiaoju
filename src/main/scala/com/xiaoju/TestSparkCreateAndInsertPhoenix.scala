@@ -155,7 +155,7 @@ object TestSparkCreateAndInsertPhoenix {
             try {
               println("insert 1w records")
               ps.executeBatch
-              //conn.commit
+              conn.commit
             } catch {
               case e: Exception =>
                 e.printStackTrace()
