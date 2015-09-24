@@ -156,6 +156,7 @@ object TestSparkCreateAndInsertPhoenix {
               println("insert 1w records")
               ps.executeBatch
               conn.commit
+              System.gc()
             } catch {
               case e: Exception =>
                 e.printStackTrace()
