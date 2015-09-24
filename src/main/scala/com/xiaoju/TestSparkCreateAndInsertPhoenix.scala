@@ -52,7 +52,7 @@ object TestSparkCreateAndInsertPhoenix {
    * @param columnCount 列的个数，插入一些列进行测试列数对查询是否有影响
    * @param times 现有数据的倍数，用现有数据构造一些数据来测试数据量对查询的影响,必须是10的公约数，比如1,2,5,10等
    */
-  def insertData(iter: Iterator[String], conn: Connection, filePath: String, tableName: String, columnCount: Int, times: Int): Unit = {
+  def insertData(iter: Iterator[String], conn: Connection, tableName: String, columnCount: Int, times: Int): Unit = {
 
     // region 拼接sql
     var insertSql = new StringBuilder("UPSERT INTO " + tableName)
@@ -95,9 +95,6 @@ object TestSparkCreateAndInsertPhoenix {
     val timeFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     val dateFormat: SimpleDateFormat = new SimpleDateFormat("yyyyMMdd")
 
-    val fileName: String = filePath
-    val file: File = new File(fileName)
-    var reader = new BufferedReader(new FileReader(file))
     var end: Long = 0L
     var tempString = ""
     var data: Array[String] = null
@@ -186,11 +183,10 @@ object TestSparkCreateAndInsertPhoenix {
     println("start to connect phoenix!")
     var createTableConn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
     println("connected to  phoenix!")
-    println("file path: " + args(0))
-    println("table name: " + args(1))
-    println("column size: " + args(2))
-    println("times: " + args(3))
-    createTable(createTableConn, args(1),args(2).toInt)
+    println("table name: " + args(0))
+    println("column size: " + args(1))
+    println("times: " + args(2))
+    createTable(createTableConn, args(0),args(1).toInt)
     var sparkConf = new SparkConf().setAppName("spark phoenix")
     var sc = new SparkContext(sparkConf)
     var inputfile = sc.textFile("/output.txt")
@@ -198,7 +194,7 @@ object TestSparkCreateAndInsertPhoenix {
       Class.forName("org.apache.phoenix.jdbc.PhoenixDriver")
       println("start to connect phoenix!")
       var conn = DriverManager.getConnection("jdbc:phoenix:bigdata-arch-hdp277.bh:2181")
-      insertData(iter, conn, args(0), args(1), args(2).toInt, args(3).toInt)
+      insertData(iter, conn, args(0), args(1).toInt, args(2).toInt)
     }
 
 
