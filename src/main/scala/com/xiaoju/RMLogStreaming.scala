@@ -36,7 +36,7 @@ object RMLogStreaming {
 
   var table = "job_audit"
   var driver: String = "com.mysql.jdbc.Driver"
-  var url: String = "jdbc:mysql://hdp801.qq:3306/monitor?autoReconnect=true&failOverReadOnly=false"
+  var url: String = "jdbc:mysql://bigdata-arch-hdp801.qq:3306/monitor?autoReconnect=true&failOverReadOnly=false"
   var user: String = "root"
   var pass: String = "123456"
 

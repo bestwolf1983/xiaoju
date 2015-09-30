@@ -18,6 +18,10 @@
             <id>Twitter Maven Repo</id>
             <url>http://maven.twttr.com</url>
         </repository>
+        <!--<repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>-->
 
 <!--           <repository>
                 <snapshots>
@@ -174,10 +178,15 @@
             <artifactId>phoenix-core</artifactId>
             <version>4.5.1-HBase-0.98</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>0.98.12.1-hadoop2</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>0.98.1-cdh5.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
