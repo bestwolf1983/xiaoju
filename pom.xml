@@ -178,11 +178,11 @@
             <artifactId>phoenix-core</artifactId>
             <version>4.5.1-HBase-0.98</version>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>0.98.12.1-hadoop2</version>
-        </dependency>-->
+        </dependency>
 <!--        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
