@@ -157,9 +157,9 @@ public class HFileScanMapreduce {
         if (!list.isEmpty()) {
           for (Cell cell : list) {
             colName = Bytes.toString(cell.getQualifier());
-            colType = colname2Type.get(colName);
+            colType = colname2Type.get(colName.toLowerCase());
             cellValue = cell.getValue();
-            struct.add(colname2Index.get(colName), changeColByType(cellValue, colType));
+            struct.add(colname2Index.get(colName), changeColByType(cellValue, colType.toLowerCase()));
           }
           list.clear();
           line = line + 1;
@@ -211,7 +211,7 @@ public class HFileScanMapreduce {
       StringBuilder sb = new StringBuilder();
       sb.append("struct<");
       for (FieldSchema col : cols) {
-        sb.append(col.getName().toUpperCase() + ":" + col.getType().toUpperCase() + ",");
+        sb.append(col.getName().toLowerCase() + ":" + col.getType().toLowerCase() + ",");
       }
 
       if (cols.size() > 0) {
