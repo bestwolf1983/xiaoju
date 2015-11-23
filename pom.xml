@@ -84,6 +84,7 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeGroupIds>org.datanucleus</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
