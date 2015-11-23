@@ -199,11 +199,11 @@
             <artifactId>hbase-client</artifactId>
             <version>0.96.2-hadoop2</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-protocol</artifactId>
             <version>0.96.2-hadoop2</version>
-        </dependency>
+        </dependency>-->
 
         <!--        <dependency>
                     <groupId>org.apache.hbase</groupId>

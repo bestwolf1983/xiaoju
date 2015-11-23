@@ -180,21 +180,22 @@ public class HFileScanMapreduce {
   }
 
   public static void main(String[] args) throws Exception {
-    String tableName = args[0];
-    String familyName = args[1];
-    String startKey = args[2];
-    String endKey = args[3];
+    String hbaseTableName = args[0];
+    String hiveTableName = args[1];
+    String familyName = args[2];
+    String startKey = args[3];
+    String endKey = args[4];
     Configuration conf = HBaseConfiguration.create(new Configuration());
-    conf.set("Table", tableName);
+    conf.set("Table", hbaseTableName);
     conf.set("StartKey", startKey.trim());
     conf.set("EndKey", endKey.trim());
     conf.set("FamilyName", familyName);
     HBaseAdmin hbaseAdmin = new HBaseAdmin(conf);
-    hbaseAdmin.flush(tableName);
+    hbaseAdmin.flush(hbaseTableName);
 
     try {
       Hive hive = Hive.get(new HiveConf());
-      Table table = hive.getTable(tableName);
+      Table table = hive.getTable(hiveTableName);
       Path tableDir = table.getPath();
       System.out.println("Table hdfs dir is :" + tableDir.toString());
       conf.set("HdfsDir", tableDir.toString());
@@ -222,7 +223,7 @@ public class HFileScanMapreduce {
       System.out.println("Table Schema: " + sb.toString());
       conf.set("Schema", sb.toString());
 
-      Job job = new Job(conf, "Read Table " + tableName);
+      Job job = new Job(conf, "Read Table " + hbaseTableName);
       job.setJarByClass(HFileScanMapreduce.class);
       job.setMapperClass(Map.class);
       job.setNumReduceTasks(0);
