@@ -19,19 +19,17 @@
 <configuration>
 <property>
        <name>fs.defaultFS</name>
-       <value>hdfs://bigdata-arch-hdp277.bh</value>
-   </property>
-   <!--
+       <value>hdfs://mycluster-tj</value>
+ </property>
 <property>
          <name>ha.zookeeper.quorum</name>
-          <value>hdp800.qq,hdp801.qq,hdp1.qq</value>
+          <value>bigdata-arch-nm00.bh,bigdata-arch-nm01.bh,bigdata-arch-hdp303.bh</value>
 </property>
 <property>
           <name>ha.zookeeper.session-timeout.ms</name>
           <value>10000</value>
          <description>ms</description>
-     </property>
-     -->
+</property>
 <!--<property>
        <name>hadoop.tmp.dir</name>
       <value>/home/xiaoju/hadoop-tmp</value>
@@ -60,4 +58,24 @@
        <name>hadoop.security.authorization</name>
   <value>true</value>
      </property>
+ <property>
+  	<name>hadoop.security.group.mapping.redis.ip</name>
+  	 <value>hdp105.qq</value>
+ </property>
+  <!--property>
+ 	 <name>hadoop.security.group.mapping</name>
+  	<value>org.apache.hadoop.security.MysqlBasedGroupsMapping</value>
+   </property-->
+   <property>
+         <name>ha.health-monitor.rpc-timeout.ms</name>
+         <value>360000</value>
+   </property>
+  <property>
+   <name>fs.checkpoint.size</name>
+        <value>167772160</value>
+   </property>
+   <property>
+      <name>dfs.namenode.checkpoint.txns</name>
+      <value>1000000</value>
+   </property>
 </configuration>

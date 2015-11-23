@@ -6,8 +6,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.phoenix.schema.SortOrder;
-import org.apache.phoenix.schema.types.PLong;
 import java.io.IOException;
 
 

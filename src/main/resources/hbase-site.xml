@@ -22,6 +22,11 @@
 -->
 <configuration>
  <property>
+    <name>phoenix.mutate.batchSize</name>
+    <value>10000</value>
+    <description>The directory shared by RegionServers.</description>
+ </property>
+ <property>
     <name>hbase.zookeeper.quorum</name>
     <value>bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh</value>
     <description>The directory shared by RegionServers.</description>
@@ -35,7 +40,7 @@
 -->
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://bigdata-arch-hdp277.bh:8020/hbase-data</value>
+    <value>hdfs://sec-data-analysis00.bh:8020/hbase-data</value>
     <description>The directory shared by RegionServers.</description>
   </property>
   <property>
@@ -45,7 +50,7 @@
   </property>
    <property>
     <name>hbase.tmp.dir</name>
-    <value>/data/xiaoju/hbase-tmp</value>
+    <value>/home/hbase-tmp</value>
   </property>
   <property>
      <name>hbase.regionserver.handler.count</name>
@@ -78,12 +83,32 @@
  <property>
   <name>hbase.regionserver.wal.codec</name>
   <value>org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec</value>
- </property> 
+ </property>
+ <property>
+   <name>hbase.region.server.rpc.scheduler.factory.class</name>
+   <value>org.apache.hadoop.hbase.ipc.PhoenixRpcSchedulerFactory</value>
+ </property>
+ <property>
+   <name>hbase.master.loadbalancer.class</name>
+   <value>org.apache.phoenix.hbase.index.balancer.IndexLoadBalancer</value>
+ </property>
+ <property>
+   <name>hbase.coprocessor.master.classes</name>
+   <value>org.apache.phoenix.hbase.index.master.IndexMasterObserver</value>
+ </property>
+ <property>
+   <name>hbase.coprocessor.regionserver.classes</name>
+   <value>org.apache.hadoop.hbase.regionserver.LocalIndexMerger</value>
+ </property>
+ <property>
+   <name>hbase.rpc.controllerfactory.class</name>
+   <value>org.apache.hadoop.hbase.ipc.controller.ServerRpcControllerFactory</value>
+ </property>
  <property>
   <name>hbase.regionserver.restart.on.zk.expire</name>
   <value>true</value>
  </property>
- <property>
+ <property> 
   <name>hbase.hregion.majorcompaction</name>
   <value>0</value>
  </property>
@@ -95,7 +120,7 @@
     <name>hbase.zookeeper.property.tickTime</name>
     <value>9000</value>
  </property>
-<property>
+<property>    
   <name>hbase.hstore.blockingStoreFiles</name>
   <value>2147483647</value>
  </property>

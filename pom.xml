@@ -173,15 +173,20 @@
             <version>0.13.1</version>
             <scope>provided</scope>
         </dependency>-->
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.phoenix</groupId>
             <artifactId>phoenix-core</artifactId>
             <version>4.5.1-HBase-0.98</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>0.96.2-hadoop2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
-            <version>0.98.12.1-hadoop2</version>
+            <version>0.96.2-hadoop2</version>
         </dependency>
 <!--        <dependency>
             <groupId>org.apache.hbase</groupId>
