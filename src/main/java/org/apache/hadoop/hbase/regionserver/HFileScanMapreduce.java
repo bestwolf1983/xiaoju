@@ -210,11 +210,11 @@ public class HFileScanMapreduce {
     try {
       Connection conn = DriverManager.getConnection(url, user,password);
       Statement statement = conn.createStatement();
-      String querySql = "select column_name,type_name from CDS where cd_id in "
-          + "（select s.cd_id from ( select s.cd_id from DBS "
-          + "left join TBLS on DBS.db_id=TBLS.db_id where DBS.name='"
-          + hiveDb + "' and TBLS.tbl_name='" + hiveTableName
-          + "') a left join SDS s on a.sd_id=s.sd_id)";
+      String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in " +
+          "(select CD_ID from SDS where SD_ID in " +
+          "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID " +
+          "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName + "')" +
+          ") order by column_name";
       System.out.println(querySql);
       /*HiveConf hiveConf = new HiveConf();
       String jdo = hiveConf.get("javax.jdo.PersistenceManagerFactoryClass");
