@@ -32,8 +32,7 @@ public class RegionInputformat extends InputFormat<LongWritable, Text>{
 	@Override
 	public RecordReader<LongWritable, Text> createRecordReader(InputSplit inputSplit,
 			TaskAttemptContext context) throws IOException, InterruptedException {
-		
-		return null;
+		return new RegionRecordReader();
 	}
 
 	@Override
