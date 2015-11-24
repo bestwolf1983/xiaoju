@@ -233,7 +233,6 @@ public class HFileScanMapreduce {
       boolean isExist = fs.exists(outputDir);
       if (isExist) {
         fs.delete(outputDir);
-        fs.mkdirs(outputDir);
       }
       StringBuilder sb = new StringBuilder();
       ResultSet cols = statement.executeQuery(querySql);
@@ -258,7 +257,7 @@ public class HFileScanMapreduce {
       job.setOutputFormatClass(OrcNewOutputFormat.class);
       job.setMapOutputKeyClass(NullWritable.class);
       job.setMapOutputValueClass(Writable.class);
-      FileInputFormat.setInputPaths(job, new Path(tableDir, "tmp"));
+      FileInputFormat.setInputPaths(job, new Path(tableDir));
       FileOutputFormat.setOutputPath(job, new Path(tableDir, "tmp"));
       System.exit(job.waitForCompletion(true) ? 0 : 1);
 
