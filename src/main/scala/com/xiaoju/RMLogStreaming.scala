@@ -41,7 +41,7 @@ object RMLogStreaming {
   var pass: String = "123456"
 
   var topic = "resourcemanager"
-  var brokerList = "hdp71.qq:9099,hdp72.qq:9092,hdp73.qq:9092"
+  var brokerList = "hdp71.qq:9092,hdp72.qq:9092,hdp73.qq:9092"
   var zkList = "hdp71.qq:2181,hdp72.qq:2181,hdp73.qq:2181"
   var groupId = "spark-rmlog"
 

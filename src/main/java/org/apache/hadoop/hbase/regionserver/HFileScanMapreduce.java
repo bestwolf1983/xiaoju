@@ -1,11 +1,5 @@
 package org.apache.hadoop.hbase.regionserver;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.xiaoju.PhoenixTypeUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -17,12 +11,8 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.ql.io.orc.OrcNewOutputFormat;
 import org.apache.hadoop.hive.ql.io.orc.OrcSerde;
-import org.apache.hadoop.hive.ql.metadata.Hive;
-import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
@@ -33,6 +23,15 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.*;
 
 public class HFileScanMapreduce {
 
@@ -123,13 +122,11 @@ public class HFileScanMapreduce {
       }
 
       System.out.println("Start to scan " + files.length + " files");
-
       KeyValue kv = null;
       CustomRegionScanner heap = new CustomRegionScanner(regionScan, conf, storeFiles);
       LinkedList<Cell> list = new LinkedList<Cell>();
       boolean isOver = false;
       byte[] cellValue = null;
-      StringBuilder sb = null;
       String colName = null;
       TypeInfo typeInfo = TypeInfoUtils.getTypeInfoFromTypeString(schema);
       ObjectInspector inspector = TypeInfoUtils.getStandardJavaObjectInspectorFromTypeInfo(typeInfo);
@@ -152,6 +149,7 @@ public class HFileScanMapreduce {
 
       long line = 0;
       String colType = null;
+      Integer index;
       do {
         heap.next(list);
         if (!list.isEmpty()) {
@@ -159,7 +157,10 @@ public class HFileScanMapreduce {
             colName = Bytes.toString(cell.getQualifier());
             colType = colname2Type.get(colName.toLowerCase());
             cellValue = cell.getValue();
-            struct.add(colname2Index.get(colName), changeColByType(cellValue, colType.toLowerCase()));
+            index = colname2Index.get(colName);
+            if(index != null) {
+              struct.add(colname2Index.get(colName), changeColByType(cellValue, colType.toLowerCase()));
+            }
           }
           list.clear();
           line = line + 1;
@@ -179,12 +180,22 @@ public class HFileScanMapreduce {
     }
   }
 
+  public static Properties readProperties(String file) throws Exception {
+    InputStream in = new FileInputStream(file);
+    Properties p = new Properties();
+    p.load(in);
+    return p;
+  }
+
   public static void main(String[] args) throws Exception {
-    String hbaseTableName = args[0];
-    String hiveTableName = args[1];
-    String familyName = args[2];
-    String startKey = args[3];
-    String endKey = args[4];
+    Properties properties = readProperties(args[0]);
+    String hbaseTableName = properties.getProperty("HbaseTable");
+    String hiveDb = properties.getProperty("HiveDb");
+    String hiveTableName = properties.getProperty("HiveTable");
+    String familyName = properties.getProperty("FamilyName");
+    String tableDir = properties.getProperty("TableDir");
+    String startKey = args[1];
+    String endKey = args[2];
     Configuration conf = HBaseConfiguration.create(new Configuration());
     conf.set("Table", hbaseTableName);
     conf.set("StartKey", startKey.trim());
@@ -192,15 +203,25 @@ public class HFileScanMapreduce {
     conf.set("FamilyName", familyName);
     HBaseAdmin hbaseAdmin = new HBaseAdmin(conf);
     hbaseAdmin.flush(hbaseTableName);
+    String url = properties.getProperty("JdbcUrl");
+    String user = properties.getProperty("User");
+    String password = properties.getProperty("Password");
 
     try {
-      HiveConf hiveConf = new HiveConf();
+      Connection conn = DriverManager.getConnection(url, user,password);
+      Statement statement = conn.createStatement();
+      String querySql = "select column_name,type_name from CDS where cd_id in "
+          + "( select s.cd_id from DBS "
+          + "left join TBLS on DBS.db_id=TBLS.db_id where DBS.name='"
+          + hiveDb + "' and TBLS.tbl_name='" + hiveTableName
+          + "') a left join SDS s on a.sd_id=s.sd_id";
+      /*HiveConf hiveConf = new HiveConf();
       String jdo = hiveConf.get("javax.jdo.PersistenceManagerFactoryClass");
       System.out.println("jdo class:" + jdo);
       Hive hive = Hive.get(hiveConf);
       Table table = hive.getTable(hiveTableName);
       Path tableDir = table.getPath();
-      System.out.println("Table hdfs dir is :" + tableDir.toString());
+      System.out.println("Table hdfs dir is :" + tableDir.toString());*/
       conf.set("HdfsDir", tableDir.toString());
 
       FileSystem fs = FileSystem.get(conf);
@@ -210,22 +231,21 @@ public class HFileScanMapreduce {
         fs.delete(outputDir);
         fs.mkdirs(outputDir);
       }
-
-      List<FieldSchema> cols = table.getAllCols();
       StringBuilder sb = new StringBuilder();
+      ResultSet cols = statement.executeQuery(querySql);
+      while(cols.next()) {
+        sb.append(cols.getString(0).toLowerCase() + ":" + cols.getString(0).toLowerCase() + ",");
+      }
+      //List<FieldSchema> cols = table.getAllCols();
       sb.append("struct<");
-      for (FieldSchema col : cols) {
-        sb.append(col.getName().toLowerCase() + ":" + col.getType().toLowerCase() + ",");
-      }
-
-      if (cols.size() > 0) {
-        sb.deleteCharAt(sb.length() - 1);
-      }
-
+      //for (FieldSchema col : cols) {
+      //  sb.append(col.getName().toLowerCase() + ":" + col.getType().toLowerCase() + ",");
+      //}
+      sb.deleteCharAt(sb.length() - 1);
       sb.append(">");
       System.out.println("Table Schema: " + sb.toString());
       conf.set("Schema", sb.toString());
-
+      statement.close();
       Job job = new Job(conf, "Read Table " + hbaseTableName);
       job.setJarByClass(HFileScanMapreduce.class);
       job.setMapperClass(Map.class);
