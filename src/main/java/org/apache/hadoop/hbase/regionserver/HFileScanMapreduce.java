@@ -29,6 +29,7 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -96,8 +97,8 @@ public class HFileScanMapreduce {
       String hdfsDir = conf.get("HdfsDir");
       int bucketNumber = 100;
       //int bucketNumber = Integer.valueOf(conf.get("BucketNumber"));
-      FileSystem fs = FileSystem.get(conf);
       String regionDir = value.toString();
+      FileSystem fs = FileSystem.get(URI.create(regionDir), conf);
       FileStatus[] files = fs.listStatus(new Path(regionDir, familyName));
       Scan regionScan = new Scan();
       regionScan.setBatch(Integer.MAX_VALUE);
