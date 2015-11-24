@@ -21,13 +21,14 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
 /**
  * ���hbase��region���з֣��ж��ٸ�region���ж��ٸ�split
  * @author cenyuhai
  *
  */
-public class RegionInputformat extends InputFormat<LongWritable, Text>{
+public class RegionInputformat extends FileInputFormat<LongWritable, Text> {
 
 	@Override
 	public RecordReader<LongWritable, Text> createRecordReader(InputSplit inputSplit,
@@ -36,20 +37,25 @@ public class RegionInputformat extends InputFormat<LongWritable, Text>{
 	}
 
 	@Override
-	public List<InputSplit> getSplits(JobContext context) throws IOException,
-			InterruptedException {
-		Configuration conf = context.getConfiguration();
-		String tableName = conf.get("Table");
-		HTable table = new HTable(conf, Bytes.toBytes(tableName));
-		//Configuration hbaseConf = HBaseConfiguration.create();
-		Path tableDir = FSUtils.getTableDir(FSUtils.getRootDir(conf), TableName.valueOf(tableName));
-		NavigableMap<HRegionInfo, ServerName> locations = table.getRegionLocations();
-		Set<HRegionInfo> regions= locations.keySet();
+	public List<InputSplit> getSplits(JobContext context) throws IOException{
 		List<InputSplit> splits = new ArrayList<InputSplit>();
-		for(HRegionInfo regionInfo : regions) {
-			String regionDir = HRegion.getRegionDir(tableDir, regionInfo.getEncodedName()).toString();
-			splits.add(new RegionSplit(regionDir));
+		try {
+			Configuration conf = context.getConfiguration();
+			String tableName = conf.get("Table");
+			HTable table = new HTable(conf, Bytes.toBytes(tableName));
+			//Configuration hbaseConf = HBaseConfiguration.create();
+			Path tableDir = FSUtils.getTableDir(FSUtils.getRootDir(conf), TableName.valueOf(tableName));
+			NavigableMap<HRegionInfo, ServerName> locations = table.getRegionLocations();
+			Set<HRegionInfo> regions= locations.keySet();
+
+			for(HRegionInfo regionInfo : regions) {
+				String regionDir = HRegion.getRegionDir(tableDir, regionInfo.getEncodedName()).toString();
+				splits.add(new RegionSplit(regionDir));
+			}
+		} catch(Exception ex) {
+				ex.printStackTrace();
 		}
+
 		
 		return splits;
 	}
