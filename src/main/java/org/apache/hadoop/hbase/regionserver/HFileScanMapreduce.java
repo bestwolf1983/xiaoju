@@ -213,7 +213,7 @@ public class HFileScanMapreduce {
       String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in " +
           "(select CD_ID from SDS where SD_ID in " +
           "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID " +
-          "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName + "')" +
+          "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName+ "')" +
           ") order by column_name";
       System.out.println(querySql);
       /*HiveConf hiveConf = new HiveConf();
@@ -235,7 +235,7 @@ public class HFileScanMapreduce {
       StringBuilder sb = new StringBuilder();
       ResultSet cols = statement.executeQuery(querySql);
       while(cols.next()) {
-        sb.append(cols.getString(0).toLowerCase() + ":" + cols.getString(0).toLowerCase() + ",");
+        sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + ",");
       }
       //List<FieldSchema> cols = table.getAllCols();
       sb.append("struct<");
