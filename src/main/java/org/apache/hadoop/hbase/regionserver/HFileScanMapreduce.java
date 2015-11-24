@@ -141,7 +141,7 @@ public class HFileScanMapreduce {
       String[] splits = null;
 
       for (int i = 0; i < fields.length; i++) {
-        splits = fields[i].split(",");
+        splits = fields[i].split(":");
         colname2Index.put(splits[0], i);
         colname2Type.put(splits[0], splits[1]);
       }
