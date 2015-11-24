@@ -3,11 +3,12 @@ package org.apache.hadoop.hbase.regionserver;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
 
-public class RegionSplit extends InputSplit implements Writable {
+public class RegionSplit extends InputSplit implements Writable, Serializable{
 	
 	private String regionPath;
 	
@@ -30,7 +31,7 @@ public class RegionSplit extends InputSplit implements Writable {
 
 	@Override
 	public String[] getLocations() throws IOException, InterruptedException {
-		return null;
+		return new String[] {};
 	}
 
 	public void readFields(DataInput in) throws IOException {

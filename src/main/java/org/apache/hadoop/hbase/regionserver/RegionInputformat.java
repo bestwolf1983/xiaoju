@@ -24,9 +24,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
 /**
- * ���hbase��region���з֣��ж��ٸ�region���ж��ٸ�split
  * @author cenyuhai
- *
  */
 public class RegionInputformat extends FileInputFormat<LongWritable, Text> {
 
