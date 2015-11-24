@@ -33,7 +33,9 @@ public class RegionInputformat extends FileInputFormat<LongWritable, Text> {
 	@Override
 	public RecordReader<LongWritable, Text> createRecordReader(InputSplit inputSplit,
 			TaskAttemptContext context) throws IOException, InterruptedException {
-		return new RegionRecordReader();
+		RegionRecordReader reader = new RegionRecordReader();
+		reader.initialize(inputSplit, context);
+		return reader;
 	}
 
 	@Override
