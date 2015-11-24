@@ -194,7 +194,10 @@ public class HFileScanMapreduce {
     hbaseAdmin.flush(hbaseTableName);
 
     try {
-      Hive hive = Hive.get(new HiveConf());
+      HiveConf hiveConf = new HiveConf();
+      String jdo = hiveConf.get("javax.jdo.PersistenceManagerFactoryClass");
+      System.out.println("jdo class:" + jdo);
+      Hive hive = Hive.get(hiveConf);
       Table table = hive.getTable(hiveTableName);
       Path tableDir = table.getPath();
       System.out.println("Table hdfs dir is :" + tableDir.toString());
