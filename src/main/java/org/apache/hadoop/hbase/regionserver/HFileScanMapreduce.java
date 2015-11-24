@@ -22,6 +22,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
 import java.io.FileInputStream;
@@ -254,7 +255,7 @@ public class HFileScanMapreduce {
       job.setInputFormatClass(RegionInputformat.class);
       job.setMapOutputKeyClass(NullWritable.class);
       job.setOutputValueClass(OrcNewOutputFormat.class);
-      OrcNewOutputFormat.setOutputPath(job, new Path(tableDir,"tmp"));
+      FileOutputFormat.setOutputPath(job, new Path(tableDir, "tmp"));
       System.exit(job.waitForCompletion(true) ? 0 : 1);
 
     } catch (Exception e) {
