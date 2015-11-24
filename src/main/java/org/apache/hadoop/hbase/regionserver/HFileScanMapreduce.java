@@ -253,8 +253,10 @@ public class HFileScanMapreduce {
       job.setMapperClass(Map.class);
       job.setNumReduceTasks(0);
       job.setInputFormatClass(RegionInputformat.class);
+      job.setOutputFormatClass(OrcNewOutputFormat.class);
       job.setMapOutputKeyClass(NullWritable.class);
-      job.setOutputValueClass(OrcNewOutputFormat.class);
+      job.setMapOutputValueClass(Writable.class);
+
       FileOutputFormat.setOutputPath(job, new Path(tableDir, "tmp"));
       System.exit(job.waitForCompletion(true) ? 0 : 1);
 
