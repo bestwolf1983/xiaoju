@@ -208,7 +208,7 @@ public class HFileScanMapreduce {
     String password = properties.getProperty("Password");
 
     try {
-      Connection conn = DriverManager.getConnection(url, user,password);
+      Connection conn = DriverManager.getConnection(url, user, password);
       Statement statement = conn.createStatement();
       String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in " +
           "(select CD_ID from SDS where SD_ID in " +
@@ -234,11 +234,11 @@ public class HFileScanMapreduce {
       }
       StringBuilder sb = new StringBuilder();
       ResultSet cols = statement.executeQuery(querySql);
+      sb.append("struct<");
       while(cols.next()) {
         sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + ",");
       }
       //List<FieldSchema> cols = table.getAllCols();
-      sb.append("struct<");
       //for (FieldSchema col : cols) {
       //  sb.append(col.getName().toLowerCase() + ":" + col.getType().toLowerCase() + ",");
       //}
