@@ -55,11 +55,11 @@ public class HbaseMr {
 
     public String tranformationColName(byte[] bytes, int type) {
       if (type == ColumnType.LONG.ordinal()) {
-        return Long.valueOf(Bytes.toLong(bytes)).toString();
+        return String.valueOf(Bytes.toLong(bytes));
       } else if (type == ColumnType.BIGINT.ordinal()) {
-        return Long.valueOf(Bytes.toLong(bytes)).toString();
+        return String.valueOf(Bytes.toLong(bytes)).toString();
       } else if (type == ColumnType.INT.ordinal()) {
-        return Integer.valueOf(Bytes.toInt(bytes)).toString();
+        return String.valueOf(Bytes.toInt(bytes)).toString();
       } else if (type == ColumnType.STRING.ordinal()) {
         return Bytes.toString(bytes);
       } else if (type == ColumnType.DECIMAL.ordinal()) {

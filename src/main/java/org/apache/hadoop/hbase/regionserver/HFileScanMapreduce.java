@@ -164,7 +164,7 @@ public class HFileScanMapreduce {
             cellValue = cell.getValue();
             index = colname2Index.get(colName.toLowerCase());
             if(index != null) {
-              struct.add(colname2Index.get(colName), tranformationColName(cellValue, colType));
+              struct.add(index, tranformationColName(cellValue, colType));
             }
           }
           list.clear();
