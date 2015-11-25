@@ -148,7 +148,7 @@ public class HbaseMr {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-
+    conf.set("hbase.zookeeper.quorum","bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh");
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
     String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
