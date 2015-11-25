@@ -126,6 +126,7 @@ public class HbaseMr {
         }
         sb.append("\t");
       }
+      sb.deleteCharAt(sb.length() - 1);
 
       context.write(null, new Text(sb.toString()));
     }
