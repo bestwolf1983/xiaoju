@@ -152,8 +152,6 @@ public class HbaseMr {
     conf.set("StartKey", startKey.trim());
     conf.set("EndKey", endKey.trim());
     conf.set("FamilyName", familyName);
-    HBaseAdmin hbaseAdmin = new HBaseAdmin(conf);
-    hbaseAdmin.flush(hbaseTableName);
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
