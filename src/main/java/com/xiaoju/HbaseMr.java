@@ -187,7 +187,7 @@ public class HbaseMr {
     statement.close();
 
     Job job = new Job(conf, "Read Table:" + hbaseTableName);
-    job.setJarByClass(Map.class);
+    job.setJarByClass(HbaseMr.class);
 
     Scan scan = new Scan();
     scan.setCaching(100);
