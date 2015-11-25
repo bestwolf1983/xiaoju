@@ -23,6 +23,26 @@
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/jars</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <includeGroupIds>org.datanucleus</includeGroupIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.2</version>
         <executions>
@@ -48,7 +68,7 @@
                 </transformer>
                 <transformer>
                   <manifestEntries>
-                    <Main-Class>com.xiaoju.RMLogStreaming</Main-Class>
+                    <Main-Class>org.apache.hadoop.hbase.regionserver.HFileScanMapreduce</Main-Class>
                   </manifestEntries>
                 </transformer>
                 <transformer>
@@ -63,12 +83,8 @@
   </build>
   <repositories>
     <repository>
-      <id>Akka repository</id>
-      <url>http://repo.akka.io/releases</url>
-    </repository>
-    <repository>
-      <id>Twitter Maven Repo</id>
-      <url>http://maven.twttr.com</url>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -161,10 +177,6 @@
           <groupId>org.apache.commons</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>commons-math3</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jul-to-slf4j</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
@@ -227,14 +239,6 @@
         <exclusion>
           <artifactId>jackson-module-scala_2.10</artifactId>
           <groupId>com.fasterxml.jackson.module</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ivy</artifactId>
-          <groupId>org.apache.ivy</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>oro</artifactId>
-          <groupId>oro</groupId>
         </exclusion>
         <exclusion>
           <artifactId>tachyon-client</artifactId>
@@ -303,10 +307,6 @@
         <exclusion>
           <artifactId>hive-exec</artifactId>
           <groupId>org.spark-project.hive</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>httpclient</artifactId>
-          <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
         <exclusion>
           <artifactId>hive-serde</artifactId>

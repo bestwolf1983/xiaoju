@@ -736,7 +736,7 @@ public class CustomStoreScanner extends NonLazyKeyValueScanner implements
 		// actually more correct, since memstore get put at the end.
 		List<StoreFileScanner> sfScanners = StoreFileScanner
 				.getScannersForStoreFiles(storeFilesToScan, cacheBlocks,
-						usePread, isCompaction, matcher);
+						usePread, isCompaction, matcher, System.currentTimeMillis());
 		List<KeyValueScanner> scanners = new ArrayList<KeyValueScanner>(
 				sfScanners.size());
 		scanners.addAll(sfScanners);
