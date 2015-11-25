@@ -111,10 +111,10 @@ public class HFileScanMapreduce {
       //byte[] stopRow = Bytes.toBytes(endId);
       byte[] startRow = new byte[5];
       startRow[0] = (byte)0;
-      System.arraycopy(PhoenixTypeUtil.toBytes(20150709L), 0, startRow, 1, 4);
+      System.arraycopy(PhoenixTypeUtil.toBytes(20150709), 0, startRow, 1, 4);
       byte[] stopRow = new byte[6];
-      stopRow[0] = (byte)1;
-      System.arraycopy(PhoenixTypeUtil.toBytes(20150709L), 0, stopRow, 1, 4);
+      stopRow[0] = (byte)(bucketNumber - 1);
+      System.arraycopy(PhoenixTypeUtil.toBytes(20150709), 0, stopRow, 1, 4);
       stopRow[5] = (byte)(bucketNumber - 1);
       regionScan.setStartRow(getBytes(startId));
       regionScan.setStopRow(getBytes(endId));
