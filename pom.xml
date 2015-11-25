@@ -14,6 +14,10 @@
             <id>cloudera</id>
             <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
+        <repository>
+            <id>nexus</id>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+        </repository>
 <!--        <repository>
             <id>Akka repository</id>
             <url>http://repo.akka.io/releases</url>
@@ -217,7 +221,7 @@
             <artifactId>hive-metastore</artifactId>
             <version>1.2.1</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
             <version>0.98.12.1-hadoop2</version>
@@ -226,13 +230,13 @@
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>0.98.12.1-hadoop2</version>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-protocol</artifactId>
             <version>0.96.2-hadoop2</version>
         </dependency>-->
-<!--        <dependency>
+        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
             <version>0.98.1-cdh5.1.0</version>
@@ -241,7 +245,7 @@
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>0.98.1-cdh5.1.0</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
