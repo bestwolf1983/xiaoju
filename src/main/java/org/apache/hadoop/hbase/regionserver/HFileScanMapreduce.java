@@ -154,6 +154,7 @@ public class HFileScanMapreduce {
       long line = 0;
       Integer colType;
       Integer index;
+      heap.reseek(startRow);
       do {
         heap.next(list);
         if (!list.isEmpty()) {
