@@ -148,6 +148,7 @@ public class HbaseMr {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
+    conf.set("hbase.rootdir", "hdfs://sec-data-analysis00.bh:8020/hbase-data");
     conf.set("hbase.zookeeper.quorum","bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh");
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
