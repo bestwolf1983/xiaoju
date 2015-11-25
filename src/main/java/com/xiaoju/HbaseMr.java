@@ -105,9 +105,12 @@ public class HbaseMr {
             cellName = (byte[]) entry.getKey();
             cellValue = (byte[]) entry.getValue();
             colName = Bytes.toString(cellName);
-            colType = colname2Type.get(colName.toLowerCase());
             index = colname2Index.get(colName.toLowerCase());
-            values[index] = tranformationColName(cellValue, colType);
+            if(index != null) {
+              colType = colname2Type.get(colName.toLowerCase());
+              values[index] = tranformationColName(cellValue, colType);
+            }
+
         }
       }
 
