@@ -116,8 +116,8 @@ public class HFileScanMapreduce {
       stopRow[0] = (byte)(bucketNumber - 1);
       System.arraycopy(PhoenixTypeUtil.toBytes(20150709), 0, stopRow, 1, 4);
       stopRow[5] = (byte)(bucketNumber - 1);
-      regionScan.setStartRow(getBytes(startId));
-      regionScan.setStopRow(getBytes(endId));
+      //regionScan.setStartRow(getBytes(startId));
+      //regionScan.setStopRow(getBytes(endId));
 
       ArrayList<StoreFileInfo> storeFiles = new ArrayList<StoreFileInfo>(files.length);
       for (FileStatus status : files) {
