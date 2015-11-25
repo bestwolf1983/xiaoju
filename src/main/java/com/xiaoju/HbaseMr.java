@@ -9,7 +9,6 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
-import org.apache.hadoop.hbase.regionserver.RegionSplit;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -24,7 +23,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Properties;
 
@@ -67,12 +65,6 @@ public class HbaseMr {
       } else {
         return Bytes.toString(bytes);
       }
-    }
-
-    private String regionPath;
-
-    protected void setup(Context context) {
-      regionPath = ((RegionSplit) context.getInputSplit()).getRegionPath();
     }
 
     public byte[] getBytes(String key) {
