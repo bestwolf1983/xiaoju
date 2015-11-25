@@ -199,7 +199,7 @@ public class HbaseMr {
         Text.class,
         job);
     job.setNumReduceTasks(0);
-    FileOutputFormat.setOutputPath(job, new Path(tableDir, "/tmp"));
+    FileOutputFormat.setOutputPath(job, outputDir);
 
     boolean b = job.waitForCompletion(true);
     if (!b) {
