@@ -206,9 +206,7 @@ public class CustomRegionScanner implements RegionScanner {
 			throws IOException {
 		KeyValue nextKv;
 		do {
-			// ��heap����ȡ��ʣ�µĽ�����results����
 			heap.next(results, limit - results.size());
-			// ������ˣ��ͷ�����
 			if (limit > 0 && results.size() == limit) {
 				return KV_LIMIT;
 			}
@@ -220,8 +218,7 @@ public class CustomRegionScanner implements RegionScanner {
 	}
 
 	/**
-	 * ���û�й������������Ѿ����˹�ȫ����
-	 * 
+	 *
 	 * @return True if a filter rules the scanner is over, done.
 	 */
 	public synchronized boolean isFilterDone() throws IOException {
@@ -259,7 +256,7 @@ public class CustomRegionScanner implements RegionScanner {
 				offset = current.getRowOffset();
 				length = current.getRowLength();
 			}
-			// ���һ�µ����row�Ƿ�Ӧ��ֹͣ��
+
 			boolean stopRow = isStopRow(currentRow, offset, length);
 			// Check if we were getting data from the joinedHeap and hit the
 			// limit.
@@ -279,7 +276,6 @@ public class CustomRegionScanner implements RegionScanner {
 				// to next.
 				// Technically, if we hit limits before on this row, we don't
 				// need this call.
-				// �����filter�Ļ���ûͨ��filter�Ŀ��飬��������row���е����ݣ��л�����һ��Scanner
 				if (filterRowKey(currentRow, offset, length)) {
 					boolean moreRows = nextRow(currentRow, offset, length);
 					if (!moreRows)
@@ -287,12 +283,10 @@ public class CustomRegionScanner implements RegionScanner {
 					results.clear();
 					continue;
 				}
-				// �ѽ��浽results����
 				KeyValue nextKv = populateResult(results, this.storeHeap,
 						limit, currentRow, offset, length);
 				// Ok, we are good, let's try to get some results from the main
 				// heap.
-				// ��populateResult�ҵ����㹻limit������
 				if (nextKv == KV_LIMIT) {
 					if (this.filter != null && filter.hasFilterRow()) {
 						throw new IncompatibleFilterException(
@@ -354,20 +348,17 @@ public class CustomRegionScanner implements RegionScanner {
 		}
 	}
 
-	/** ���filter��Ϊ�յĻ�������ͨ����filter�Ĺ��ˣ�����true */
 	private boolean filterRowKey(byte[] row, int offset, short length)
 			throws IOException {
 		return filter != null && filter.filterRowKey(row, offset, length);
 	}
 
-	/** �ҳ����е�rowkey����currentRow��cells������� */
 	protected boolean nextRow(byte[] currentRow, int offset, short length)
 			throws IOException {
 		assert this.joinedContinuationRow == null : "Trying to go to next row during joinedHeap read.";
 		KeyValue next;
 		while ((next = this.storeHeap.peek()) != null
 				&& next.matchingRow(currentRow, offset, length)) {
-			// rowkey��ͬ�Ļ����Ͱ�storeHeap�е��ܲ�ó���������
 			this.storeHeap.next(MOCKED_LIST);
 		}
 		resetFilters();

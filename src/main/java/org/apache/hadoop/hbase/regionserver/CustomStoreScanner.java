@@ -33,7 +33,7 @@ import org.apache.hadoop.hbase.util.EnvironmentEdgeManager;
 
 /**
  * Scanner scans both the memstore and the Store. Coalesce KeyValue stream into
- * List<KeyValue> for a single row. �����ɨ��memstore��hstore��snapshot����ʱ��ѯ
+ * List<KeyValue> for a single row.
  */
 
 public class CustomStoreScanner extends NonLazyKeyValueScanner implements

@@ -24,8 +24,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,42 +38,45 @@ public class HFileScanMapreduce {
 
   public static class Map extends Mapper<LongWritable, Text, NullWritable, Writable> {
 
-    public Object changeColByType(byte[] bytes, String type) {
-      if(type.contains("long") || type.contains("bigint")) {
-        return Bytes.toLong(bytes);
+    public enum ColumnType {
+      LONG, BIGINT, INT, STRING, DECIMAL
+    }
+
+    public int changeColByType(String type) {
+      if(type.contains(ColumnType.LONG.toString())) {
+        return ColumnType.LONG.ordinal();
+      } else if (type.contains(ColumnType.BIGINT.toString())){
+        return ColumnType.BIGINT.ordinal();
       } else if(type.contains("int")) {
-        return Bytes.toInt(bytes);
+        return ColumnType.INT.ordinal();
       } else if (type.equals("string")){
-        return Bytes.toString(bytes);
+        return ColumnType.STRING.ordinal();
       } if(type.contains("decimal")) {
+        return ColumnType.DECIMAL.ordinal();
+      } else {
+        return ColumnType.STRING.ordinal();
+      }
+    }
+
+    public Object tranformationColName(byte[] bytes, int type) {
+      if(type == ColumnType.LONG.ordinal()) {
+        return Bytes.toLong(bytes);
+      } else if(type == ColumnType.BIGINT.ordinal()) {
+        return Bytes.toLong(bytes);
+      } else if(type == ColumnType.INT.ordinal()) {
+        return Bytes.toInt(bytes);
+      } else if(type == ColumnType.STRING.ordinal()) {
+        return Bytes.toString(bytes);
+      } else if(type == ColumnType.DECIMAL.ordinal()) {
         return Bytes.toBigDecimal(bytes);
       } else {
         return Bytes.toString(bytes);
       }
-
-/*      switch (type) {
-        case "SHORT":
-          return Bytes.toShort(bytes);
-        case "INT":
-          return Bytes.toInt(bytes);
-        case "LONG":
-          return Bytes.toLong(bytes);
-        case "FLOAT":
-          return Bytes.toFloat(bytes);
-        case "DOUBLE":
-          return Bytes.toDouble(bytes);
-        case "DECIMAL":
-          return Bytes.toBigDecimal(bytes);
-        default:
-          return Bytes.toString(bytes);
-      }*/
     }
 
-    private MultipleOutputs output;
     private String regionPath;
 
     protected void setup(Context context) {
-      output = new MultipleOutputs(context);
       regionPath = ((RegionSplit) context.getInputSplit()).getRegionPath();
     }
 
@@ -135,7 +136,7 @@ public class HFileScanMapreduce {
       ObjectInspector inspector = TypeInfoUtils.getStandardJavaObjectInspectorFromTypeInfo(typeInfo);
 
       HashMap<String, Integer> colname2Index = new HashMap<String, Integer>();
-      HashMap<String, String> colname2Type = new HashMap<String, String>();
+      HashMap<String, Integer> colname2Type = new HashMap<String, Integer>();
       String fieldsStr = schema.substring("struct<".length(), schema.length() - 1 - (">".length()));
       String[] fields = fieldsStr.split(",");
       String[] splits = null;
@@ -143,7 +144,7 @@ public class HFileScanMapreduce {
       for (int i = 0; i < fields.length; i++) {
         splits = fields[i].split(":");
         colname2Index.put(splits[0], i);
-        colname2Type.put(splits[0], splits[1]);
+        colname2Type.put(splits[0], changeColByType(splits[1].toLowerCase()));
       }
 
       final OrcSerde serde = new OrcSerde();
@@ -151,7 +152,7 @@ public class HFileScanMapreduce {
       List<Object> struct = new ArrayList<Object>(fields.length);
 
       long line = 0;
-      String colType = null;
+      Integer colType;
       Integer index;
       do {
         heap.next(list);
@@ -162,7 +163,7 @@ public class HFileScanMapreduce {
             cellValue = cell.getValue();
             index = colname2Index.get(colName);
             if(index != null) {
-              struct.add(colname2Index.get(colName), changeColByType(cellValue, colType.toLowerCase()));
+              struct.add(colname2Index.get(colName), tranformationColName(cellValue, colType));
             }
           }
           list.clear();
@@ -172,7 +173,7 @@ public class HFileScanMapreduce {
           }
 
           row = serde.serialize(struct, inspector);
-          output.write(regionPath, null, row, hdfsDir + "/tmp");
+          context.write(null, row);
         } else {
           isOver = true;
           System.out.println("game over");
@@ -213,19 +214,12 @@ public class HFileScanMapreduce {
     try {
       Connection conn = DriverManager.getConnection(url, user, password);
       Statement statement = conn.createStatement();
-      String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in " +
-          "(select CD_ID from SDS where SD_ID in " +
-          "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID " +
-          "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName+ "')" +
-          ") order by column_name";
+      String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
+          + "(select CD_ID from SDS where SD_ID in "
+          + "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
+          + "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName+ "')"
+          + ") order by column_name";
       System.out.println(querySql);
-      /*HiveConf hiveConf = new HiveConf();
-      String jdo = hiveConf.get("javax.jdo.PersistenceManagerFactoryClass");
-      System.out.println("jdo class:" + jdo);
-      Hive hive = Hive.get(hiveConf);
-      Table table = hive.getTable(hiveTableName);
-      Path tableDir = table.getPath();
-      System.out.println("Table hdfs dir is :" + tableDir.toString());*/
       conf.set("HdfsDir", tableDir.toString());
 
       FileSystem fs = FileSystem.get(conf);
@@ -240,10 +234,7 @@ public class HFileScanMapreduce {
       while(cols.next()) {
         sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + ",");
       }
-      //List<FieldSchema> cols = table.getAllCols();
-      //for (FieldSchema col : cols) {
-      //  sb.append(col.getName().toLowerCase() + ":" + col.getType().toLowerCase() + ",");
-      //}
+
       sb.deleteCharAt(sb.length() - 1);
       sb.append(">");
       System.out.println("Table Schema: " + sb.toString());
