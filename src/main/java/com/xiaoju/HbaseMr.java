@@ -110,24 +110,21 @@ public class HbaseMr {
       for (java.util.Map.Entry res : resmap.entrySet()) {
         NavigableMap<byte[], byte[]> qualifiers = (NavigableMap<byte[], byte[]>) res.getValue();
         for (java.util.Map.Entry entry : qualifiers.entrySet()) {
-          for (java.util.Map.Entry col : qualifiers.entrySet()) {
-            cellName = (byte[]) col.getKey();
-            cellValue = (byte[]) col.getValue();
+            cellName = (byte[]) entry.getKey();
+            cellValue = (byte[]) entry.getValue();
             colName = Bytes.toString(cellName);
             colType = colname2Type.get(colName.toLowerCase());
             index = colname2Index.get(colName.toLowerCase());
             values[index] = tranformationColName(cellValue, colType);
-          }
         }
       }
 
       StringBuilder sb = new StringBuilder();
       for (String s : values) {
         if (s != null) {
-          sb.append(s + "\t");
-        } else {
-          sb.append("\t");
+          sb.append(s);
         }
+        sb.append("\t");
       }
 
       context.write(null, new Text(sb.toString()));
@@ -160,7 +157,6 @@ public class HbaseMr {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-
 
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
