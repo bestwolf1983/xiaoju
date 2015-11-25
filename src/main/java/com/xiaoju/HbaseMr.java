@@ -159,7 +159,7 @@ public class HbaseMr {
         + "(select CD_ID from SDS where SD_ID in "
         + "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
         + "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName + "')"
-        + ") order by column_name";
+        + ") order by INTEGER_IDX";
     System.out.println(querySql);
     conf.set("HdfsDir", tableDir.toString());
 
@@ -199,7 +199,7 @@ public class HbaseMr {
         Text.class,
         job);
     job.setNumReduceTasks(0);
-    FileOutputFormat.setOutputPath(job, new Path(tableDir, "tmp"));
+    FileOutputFormat.setOutputPath(job, new Path(tableDir, "/tmp"));
 
     boolean b = job.waitForCompletion(true);
     if (!b) {
