@@ -4,7 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -15,6 +14,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -202,6 +202,7 @@ public class HbaseMr {
         Text.class,
         job);
     job.setNumReduceTasks(0);
+    FileOutputFormat.setOutputPath(job, new Path(tableDir, "tmp"));
 
     boolean b = job.waitForCompletion(true);
     if (!b) {
