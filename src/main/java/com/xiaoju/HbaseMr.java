@@ -138,14 +138,15 @@ public class HbaseMr {
 
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
-    String hbaseTableName = properties.getProperty("HbaseTable");
+    String hbaseTableName = args[1];
     String hiveDb = properties.getProperty("HiveDb");
-    String hiveTableName = properties.getProperty("HiveTable");
+    //String hiveTableName = properties.getProperty("HiveTable");
+    String hiveTableName = hbaseTableName.toLowerCase();
     String familyName = properties.getProperty("FamilyName");
-    String tableDir = properties.getProperty("TableDir");
+    //String tableDir = properties.getProperty("TableDir");
     String zookeeperList = properties.getProperty("ZookeeperList");
-    String startKey = args[1];
-    String endKey = args[2];
+    String startKey = args[2];
+    String endKey = args[3];
     Configuration conf = HBaseConfiguration.create(new Configuration());
     conf.set("Table", hbaseTableName);
     conf.set("StartKey", startKey.trim());
@@ -158,12 +159,20 @@ public class HbaseMr {
     conf.set("hbase.zookeeper.quorum",zookeeperList);
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
+    String queryLocationSql = "select LOCATION from SDS where SD_ID in "
+        + " (select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
+        + "  where d.NAME='" + hiveDb +"' and t.TBL_NAME='" + hiveTableName + "')";
+
+    ResultSet locationSet = statement.executeQuery(queryLocationSql);
+    String tableDir = locationSet.getString(0);
+
     String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
         + "(select CD_ID from SDS where SD_ID in "
         + "(select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
         + "where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName + "')"
         + ") order by INTEGER_IDX";
     System.out.println(querySql);
+    System.out.println("Table Dir:" + tableDir);
     conf.set("HdfsDir", tableDir.toString());
 
     FileSystem fs = FileSystem.get(conf);
@@ -214,10 +223,10 @@ public class HbaseMr {
     job.setNumReduceTasks(0);
     FileOutputFormat.setOutputPath(job, outputDir);
 
-    boolean b = job.waitForCompletion(true);
+/*    boolean b = job.waitForCompletion(true);
     if (!b) {
       throw new IOException("error with job!");
-    }
+    }*/
 
 
   }
