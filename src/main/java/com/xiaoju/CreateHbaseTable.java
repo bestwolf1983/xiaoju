@@ -18,6 +18,7 @@ public class CreateHbaseTable {
       throw new Exception("args length < 2, args[0]:TableName, args[1]:is Compress,value is [true or false]");
     }
     Configuration conf = HBaseConfiguration.create();
+    conf.set("hbase.zookeeper.quorum", "bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh");
     HBaseAdmin admin = new HBaseAdmin(conf);
     HTableDescriptor tableDesc = new HTableDescriptor(args[0].toUpperCase());
     //MemStore大小
