@@ -21,7 +21,7 @@ public class CreateHbaseTable {
     HBaseAdmin admin = new HBaseAdmin(conf);
     HTableDescriptor tableDesc = new HTableDescriptor(args[0].toUpperCase());
     //MemStore大小
-    tableDesc.setMemStoreFlushSize(256 * 1024 * 1024);
+    tableDesc.setMemStoreFlushSize(128 * 1024 * 1024);
     HColumnDescriptor colDesc = new HColumnDescriptor("a");
     colDesc.setBloomFilterType(BloomType.ROW);
     //下面的压缩建议在正式环境使用
@@ -33,8 +33,10 @@ public class CreateHbaseTable {
     byte[][] splitKeys = new byte[99][2];
     for(int i=1;i<100;i++) {
       String key = String.format("%02d", i);
+      System.out.println(key);
       splitKeys[i-1] = Bytes.toBytes(key);
     }
+
     colDesc.setMaxVersions(1);
     tableDesc.addFamily(colDesc);
     admin.createTable(tableDesc, splitKeys);
