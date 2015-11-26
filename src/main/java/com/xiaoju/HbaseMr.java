@@ -164,6 +164,7 @@ public class HbaseMr {
         + "  where d.NAME='" + hiveDb +"' and t.TBL_NAME='" + hiveTableName + "')";
 
     ResultSet locationSet = statement.executeQuery(queryLocationSql);
+    locationSet.next();
     String tableDir = locationSet.getString(0);
 
     String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
