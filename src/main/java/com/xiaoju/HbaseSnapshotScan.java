@@ -4,11 +4,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
+import org.apache.hadoop.hbase.protobuf.generated.HBaseProtos;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -23,6 +25,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
@@ -103,7 +106,6 @@ public class HbaseSnapshotScan {
               colType = colname2Type.get(colName.toLowerCase());
               values[index] = tranformationColName(cellValue, colType);
             }
-
         }
       }
 
@@ -155,7 +157,6 @@ public class HbaseSnapshotScan {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-    //conf.set("hbase.rootdir", "hdfs://sec-data-analysis00.bh:8020/hbase-data");
     conf.set("hbase.zookeeper.quorum",zookeeperList);
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
@@ -200,11 +201,27 @@ public class HbaseSnapshotScan {
     conf.set("Schema", sb.toString());
     statement.close();
 
+    String snapshotString = hbaseTableName + System.currentTimeMillis();
+    HBaseAdmin admin = new HBaseAdmin(conf);
+    admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
+
+    List<HBaseProtos.SnapshotDescription> snapshots = admin.listSnapshots();
+    boolean foundSnapShot = false;
+    for(HBaseProtos.SnapshotDescription s: snapshots) {
+      if(s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
+          foundSnapShot = true;
+      }
+    }
+
+    if(!foundSnapShot) {
+      System.out.println("can not found the snapshot we take!!! program exit");
+    }
+
     Job job = new Job(conf, "Read Table:" + hbaseTableName);
     job.setJarByClass(HbaseSnapshotScan.class);
 
     Scan scan = new Scan();
-    scan.setCaching(100);
+    scan.setCaching(1000);
     scan.setBatch(Integer.MAX_VALUE);
     scan.setMaxVersions(1);
     if(!startKey.equals("0")) {
@@ -214,15 +231,18 @@ public class HbaseSnapshotScan {
       scan.setStopRow(getBytes(endKey));
     }
 
-    TableMapReduceUtil.initTableMapperJob(
-        hbaseTableName,
+    TableMapReduceUtil.addDependencyJars(job.getConfiguration(),
+        HbaseSnapshotScan.class);
+
+    TableMapReduceUtil.initTableSnapshotMapperJob(
+        snapshotString,
         scan,
         ReaderHbaseMap.class,
         NullWritable.class,
         Text.class,
-        job);
-    job.setNumReduceTasks(0);
-    FileOutputFormat.setOutputPath(job, outputDir);
+        job,
+        true,
+        outputDir);
 
     boolean b = job.waitForCompletion(true);
 
@@ -230,6 +250,9 @@ public class HbaseSnapshotScan {
       Path tablePath = new Path(tableDir);
       fs.delete(tablePath);
       fs.rename(outputDir, tablePath);
+      System.out.println("delete snapshot:" + snapshotString);
+      admin.deleteSnapshot(snapshotString);
+      admin.close();
     } else {
       throw new IOException("error with job!");
     }

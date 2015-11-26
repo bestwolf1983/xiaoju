@@ -13,6 +13,25 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.27" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.stream:stax-api:1.0-2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-server:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-common:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-protocol:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.hbase:hbase-prefix-tree:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.hbase:hbase-common:tests:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-hadoop-compat:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-hadoop2-compat:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: com.yammer.metrics:metrics-core:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.high-scale-lib:high-scale-lib:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-json:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.8.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-client:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.hbase:hbase-annotations:0.98.12.1-hadoop2" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby.jcodings:jcodings:1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.jruby.joni:joni:2.1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-server:1.9" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.9" level="project" />
     <orderEntry type="library" name="Maven: io.crate:crate-client:0.50.3" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.4" level="project" />
