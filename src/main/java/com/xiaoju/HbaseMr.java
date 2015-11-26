@@ -67,13 +67,6 @@ public class HbaseMr {
       }
     }
 
-    public byte[] getBytes(String key) {
-      try {
-        return Bytes.toBytes(Long.valueOf(key));
-      } catch (Exception ex) {
-        return Bytes.toBytes(key);
-      }
-    }
 
     public void map(ImmutableBytesWritable key, Result value, Context context)
         throws IOException, InterruptedException {
@@ -134,6 +127,15 @@ public class HbaseMr {
     return p;
   }
 
+
+  public static byte[] getBytes(String key) {
+    try {
+      return Bytes.toBytes(Long.valueOf(key));
+    } catch (Exception ex) {
+      return Bytes.toBytes(key);
+    }
+  }
+
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
     String hbaseTableName = properties.getProperty("HbaseTable");
@@ -141,6 +143,7 @@ public class HbaseMr {
     String hiveTableName = properties.getProperty("HiveTable");
     String familyName = properties.getProperty("FamilyName");
     String tableDir = properties.getProperty("TableDir");
+    String zookeeperList = properties.getProperty("ZookeeperList");
     String startKey = args[1];
     String endKey = args[2];
     Configuration conf = HBaseConfiguration.create(new Configuration());
@@ -151,8 +154,8 @@ public class HbaseMr {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-    conf.set("hbase.rootdir", "hdfs://sec-data-analysis00.bh:8020/hbase-data");
-    conf.set("hbase.zookeeper.quorum","bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh");
+    //conf.set("hbase.rootdir", "hdfs://sec-data-analysis00.bh:8020/hbase-data");
+    conf.set("hbase.zookeeper.quorum",zookeeperList);
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
     String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
@@ -164,7 +167,11 @@ public class HbaseMr {
     conf.set("HdfsDir", tableDir.toString());
 
     FileSystem fs = FileSystem.get(conf);
-    Path outputDir = new Path(tableDir, "tmp");
+    Path antiExportPath = new Path("/tmp/anti-export");
+    if(!fs.exists(antiExportPath)) {
+      fs.mkdirs(antiExportPath);
+    }
+    Path outputDir = new Path("/tmp/anti-export/" + hiveTableName);
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
@@ -190,6 +197,12 @@ public class HbaseMr {
     scan.setCaching(100);
     scan.setBatch(Integer.MAX_VALUE);
     scan.setMaxVersions(1);
+    if(!startKey.equals("0")) {
+      scan.setStartRow(getBytes(startKey));
+    }
+    if(!endKey.equals("0")) {
+      scan.setStopRow(getBytes(endKey));
+    }
 
     TableMapReduceUtil.initTableMapperJob(
         hbaseTableName,
