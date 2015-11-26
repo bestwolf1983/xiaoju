@@ -112,7 +112,7 @@ public class HbaseMr {
         if (s != null) {
           sb.append(s);
         }
-        sb.append("\t");
+        sb.append("\001");
       }
       sb.deleteCharAt(sb.length() - 1);
 
@@ -224,10 +224,15 @@ public class HbaseMr {
     job.setNumReduceTasks(0);
     FileOutputFormat.setOutputPath(job, outputDir);
 
-/*    boolean b = job.waitForCompletion(true);
-    if (!b) {
+    boolean b = job.waitForCompletion(true);
+
+    if (b) {
+      Path tablePath = new Path(tableDir);
+      fs.delete(tablePath);
+      fs.rename(outputDir, tablePath);
+    } else {
       throw new IOException("error with job!");
-    }*/
+    }
 
 
   }
