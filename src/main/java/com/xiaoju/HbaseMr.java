@@ -165,7 +165,7 @@ public class HbaseMr {
 
     ResultSet locationSet = statement.executeQuery(queryLocationSql);
     locationSet.next();
-    String tableDir = locationSet.getString(0);
+    String tableDir = locationSet.getString(1);
 
     String querySql = "select COLUMN_NAME,TYPE_NAME from COLUMNS_V2 where CD_ID in "
         + "(select CD_ID from SDS where SD_ID in "
