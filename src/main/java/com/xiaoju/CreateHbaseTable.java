@@ -34,7 +34,6 @@ public class CreateHbaseTable {
     byte[][] splitKeys = new byte[99][2];
     for(int i=1;i<100;i++) {
       String key = String.format("%02d", i);
-      System.out.println(key);
       splitKeys[i-1] = Bytes.toBytes(key);
     }
 
