@@ -12,9 +12,11 @@ import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.protobuf.generated.HBaseProtos;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -29,14 +31,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.Properties;
+import java.util.*;
 
 public class HbaseScapshot {
 
-  public static class ReaderHbaseMap extends TableMapper<NullWritable, Text> {
+  public static class ReaderHbaseMap extends TableMapper<IntWritable, Text> {
 
     public enum ColumnType {
       LONG, BIGINT, INT, STRING, DECIMAL
@@ -134,9 +133,21 @@ public class HbaseScapshot {
         sb.append("\001");
       }
       sb.deleteCharAt(sb.length() - 1);
-
-      context.write(null, new Text(sb.toString()));
+      Random random = new Random();
+      context.write(new IntWritable(random.nextInt(10)), new Text(sb.toString()));
     }
+  }
+
+  public static class ReaderHbaseReduce extends Reducer<IntWritable, Text, NullWritable, Text> {
+    @Override
+    protected void reduce(IntWritable key, Iterable<Text> values,
+                          Context context) throws IOException, InterruptedException {
+      Iterator<Text> iter = values.iterator();
+      while(iter.hasNext()) {
+        context.write(null, iter.next());
+      }
+    }
+
   }
 
   public static Properties readProperties(String file) throws Exception {
@@ -277,13 +288,13 @@ public class HbaseScapshot {
             snapshotString,
             scan,
             ReaderHbaseMap.class,
-            NullWritable.class,
+            IntWritable.class,
             Text.class,
             job,
             true,
             restoreDir);
-
-        job.setNumReduceTasks(0);
+        job.setReducerClass(ReaderHbaseReduce.class);
+        job.setNumReduceTasks(10);
         job.setOutputFormatClass(TextOutputFormat.class);
         FileOutputFormat.setOutputPath(job, outputDir);
         return job.waitForCompletion(true);
