@@ -76,7 +76,7 @@ public class HbaseMr {
       HashMap<String, Integer> colname2Index = new HashMap<String, Integer>();
       HashMap<String, Integer> colname2Type = new HashMap<String, Integer>();
       String fieldsStr = schema.substring("struct<".length(), schema.length() - 1 - (">".length()));
-      String[] fields = fieldsStr.split("&");
+      String[] fields = fieldsStr.split(",");
       String[] splits = null;
 
       byte[] cellName = null;
@@ -143,6 +143,22 @@ public class HbaseMr {
     }
   }
 
+  public static String trimType(String type) {
+    if(type.contains("bigint")) {
+      return "bigint";
+    }
+
+    if(type.contains("long")) {
+      return "long";
+    }
+
+    if(type.contains("decimal")) {
+      return "decimal";
+    }
+
+    return type.toLowerCase();
+  }
+
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
     String hbaseTableName = args[1];
@@ -198,7 +214,7 @@ public class HbaseMr {
     ResultSet cols = statement.executeQuery(querySql);
     sb.append("struct<");
     while (cols.next()) {
-      sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + "&");
+      sb.append(cols.getString(1).toLowerCase() + ":" + trimType(cols.getString(2).toLowerCase()) + ",");
     }
 
     sb.deleteCharAt(sb.length() - 1);
