@@ -295,7 +295,8 @@ public class HbaseScapshot {
     job.setReducerClass(ReaderHbaseReduce.class);
     job.setNumReduceTasks(10);
     job.setOutputFormatClass(TextOutputFormat.class);
-    FileOutputFormat.setOutputPath(job, outputDir);
+    job.getConfiguration().set("mapreduce.output.fileoutputformat.outputdir", outputDir.toString());
+    //FileOutputFormat.setOutputPath(job, outputDir);
     boolean b = job.waitForCompletion(true);
 
 /*    if (b) {
