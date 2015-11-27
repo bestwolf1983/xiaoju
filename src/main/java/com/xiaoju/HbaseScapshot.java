@@ -208,10 +208,16 @@ public class HbaseScapshot {
     if(!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    Path outputDir = new Path("/tmp/anti-export/" + hiveTableName);
+    Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
+    }
+
+    Path restoreDir = new Path("/tmp/anti-export/" + hiveTableName + "/restore");
+    isExist = fs.exists(restoreDir);
+    if (isExist) {
+      fs.delete(restoreDir);
     }
 
     StringBuilder sb = new StringBuilder();
@@ -268,11 +274,12 @@ public class HbaseScapshot {
         Text.class,
         job,
         true,
-        outputDir);
+        restoreDir);
 
     boolean b = job.waitForCompletion(true);
+    FileOutputFormat.setOutputPath(job, outputDir);
 
-    if (b) {
+/*    if (b) {
       Path tablePath = new Path(tableDir);
       fs.delete(tablePath);
       fs.rename(outputDir, tablePath);
@@ -281,7 +288,7 @@ public class HbaseScapshot {
       admin.close();
     } else {
       throw new IOException("error with job!");
-    }
+    }*/
 
 
   }
