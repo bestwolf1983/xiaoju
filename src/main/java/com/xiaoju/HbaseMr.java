@@ -253,13 +253,13 @@ public class HbaseMr {
 
     boolean b = job.waitForCompletion(true);
 
-/*    if (b) {
+    if (b) {
       Path tablePath = new Path(tableDir);
       fs.delete(tablePath);
       fs.rename(outputDir, tablePath);
     } else {
       throw new IOException("error with job!");
-    }*/
+    }
 
 
   }
