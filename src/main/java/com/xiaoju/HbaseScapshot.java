@@ -16,6 +16,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -252,6 +253,7 @@ public class HbaseScapshot {
     Job job = new Job(conf, "Read Table:" + hbaseTableName);
     job.setJarByClass(HbaseScapshot.class);
 
+
     Scan scan = new Scan();
     scan.setCaching(1000);
     scan.setBatch(Integer.MAX_VALUE);
@@ -275,6 +277,7 @@ public class HbaseScapshot {
         job,
         true,
         restoreDir);
+    job.setOutputFormatClass(TextOutputFormat.class);
     FileOutputFormat.setOutputPath(job, outputDir);
     boolean b = job.waitForCompletion(true);
 
