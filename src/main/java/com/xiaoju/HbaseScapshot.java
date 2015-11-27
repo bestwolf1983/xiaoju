@@ -36,7 +36,7 @@ import java.util.*;
 
 public class HbaseScapshot {
 
-  public static class ReaderHbaseMap extends TableMapper<IntWritable, Text> {
+  public static class ReaderHbaseMap extends TableMapper<NullWritable, Text> {
 
     public enum ColumnType {
       LONG, BIGINT, INT, STRING, DECIMAL
@@ -134,7 +134,7 @@ public class HbaseScapshot {
       }
       sb.deleteCharAt(sb.length() - 1);
       Random random = new Random();
-      context.write(new IntWritable(random.nextInt(10)), new Text(sb.toString()));
+      context.write(null, new Text(sb.toString()));
     }
   }
 
@@ -224,13 +224,13 @@ public class HbaseScapshot {
     if (!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    final Path outputDir = new Path("hdfs://mycluster-tj/tmp/anti-export/" + hiveTableName + "/output");
+    final Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
     }
 
-    final Path restoreDir = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export/" + hiveTableName + "/restore");
+    final Path restoreDir = new Path("/tmp/anti-export/" + hiveTableName + "/restore");
     FileSystem srcFs = FileSystem.get(URI.create(restoreDir.toString()),conf);
     isExist = srcFs.exists(restoreDir);
     if (isExist) {
@@ -280,20 +280,20 @@ public class HbaseScapshot {
       scan.setStopRow(getBytes(endKey));
     }
 
-    TableMapReduceUtil.addDependencyJars(job.getConfiguration(),
+    TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
         HbaseScapshot.class);
-    TableMapReduceUtil.initTableSnapshotMapperJob(
+    TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
         snapshotString,
         scan,
         ReaderHbaseMap.class,
-        IntWritable.class,
+        NullWritable.class,
         Text.class,
         job,
         true,
         restoreDir);
 
-    job.setReducerClass(ReaderHbaseReduce.class);
-    job.setNumReduceTasks(10);
+/*    job.setReducerClass(ReaderHbaseReduce.class);
+    job.setNumReduceTasks(10);*/
     job.setOutputFormatClass(TextOutputFormat.class);
     job.getConfiguration().set("mapreduce.output.fileoutputformat.outputdir", outputDir.toString());
     //FileOutputFormat.setOutputPath(job, outputDir);
