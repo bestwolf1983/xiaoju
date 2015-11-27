@@ -112,7 +112,7 @@ public class HbaseMr {
         if (s != null) {
           sb.append(s);
         }
-        sb.append("\001");
+        sb.append("\t");
       }
       sb.deleteCharAt(sb.length() - 1);
 
