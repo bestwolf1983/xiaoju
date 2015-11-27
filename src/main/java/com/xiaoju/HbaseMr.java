@@ -35,9 +35,9 @@ public class HbaseMr {
     }
 
     public int changeColByType(String type) {
-      if (type.contains(ColumnType.LONG.toString())) {
+      if (type.contains("long")) {
         return ColumnType.LONG.ordinal();
-      } else if (type.contains(ColumnType.BIGINT.toString())) {
+      } else if (type.contains("bigint")) {
         return ColumnType.BIGINT.ordinal();
       } else if (type.contains("int")) {
         return ColumnType.INT.ordinal();
@@ -55,13 +55,13 @@ public class HbaseMr {
       if (type == ColumnType.LONG.ordinal()) {
         return String.valueOf(Bytes.toLong(bytes));
       } else if (type == ColumnType.BIGINT.ordinal()) {
-        return String.valueOf(Bytes.toLong(bytes)).toString();
+        return String.valueOf(Bytes.toLong(bytes));
       } else if (type == ColumnType.INT.ordinal()) {
-        return String.valueOf(Bytes.toInt(bytes)).toString();
+        return String.valueOf(Bytes.toInt(bytes));
       } else if (type == ColumnType.STRING.ordinal()) {
         return Bytes.toString(bytes);
       } else if (type == ColumnType.DECIMAL.ordinal()) {
-        return Bytes.toBigDecimal(bytes).toString();
+        return String.valueOf(Bytes.toBigDecimal(bytes));
       } else {
         return Bytes.toString(bytes);
       }
