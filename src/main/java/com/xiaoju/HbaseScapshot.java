@@ -224,7 +224,7 @@ public class HbaseScapshot {
     if (!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    final Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
+    final Path outputDir = new Path("hdfs://mycluster-tj/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
