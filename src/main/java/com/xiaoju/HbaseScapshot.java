@@ -36,7 +36,7 @@ import java.util.*;
 
 public class HbaseScapshot {
 
-  public static class ReaderHbaseMap extends TableMapper<IntWritable, Text> {
+  public static class ReaderHbaseMap extends TableMapper<NullWritable, Text> {
 
     public enum ColumnType {
       LONG, BIGINT, INT, STRING, DECIMAL
@@ -96,7 +96,6 @@ public class HbaseScapshot {
         System.out.println(splits[0] + " type: " + splits[1]);
       }
 
-
       String[] values = new String[fields.length];
       String colName = null;
       Integer colType = null;
@@ -134,7 +133,7 @@ public class HbaseScapshot {
       }
       sb.deleteCharAt(sb.length() - 1);
       Random random = new Random();
-      context.write(new IntWritable(random.nextInt(10)), new Text(sb.toString()));
+      context.write(null, new Text(sb.toString()));
     }
   }
 
@@ -250,7 +249,6 @@ public class HbaseScapshot {
     conf.set("Schema", sb.toString());
     statement.close();
 
-
     final String snapshotString = hbaseTableName + System.currentTimeMillis();
     HBaseAdmin admin = new HBaseAdmin(conf);
     admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
@@ -286,20 +284,20 @@ public class HbaseScapshot {
         snapshotString,
         scan,
         ReaderHbaseMap.class,
-        IntWritable.class,
+        NullWritable.class,
         Text.class,
         job,
         true,
         restoreDir);
 
-    job.setReducerClass(ReaderHbaseReduce.class);
-    job.setNumReduceTasks(10);
+    //job.setReducerClass(ReaderHbaseReduce.class);
+    job.setNumReduceTasks(0);
     job.setOutputFormatClass(TextOutputFormat.class);
     job.getConfiguration().set("mapreduce.output.fileoutputformat.outputdir", outputDir.toString());
     //FileOutputFormat.setOutputPath(job, outputDir);
     boolean b = job.waitForCompletion(true);
 
-/*    if (b) {
+    if (b) {
       Path tablePath = new Path(tableDir);
       fs.delete(tablePath);
       fs.rename(outputDir, tablePath);
@@ -308,7 +306,7 @@ public class HbaseScapshot {
       admin.close();
     } else {
       throw new IOException("error with job!");
-    }*/
+    }
 
 
   }
