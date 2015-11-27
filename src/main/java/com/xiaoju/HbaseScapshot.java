@@ -257,10 +257,10 @@ public class HbaseScapshot {
       scan.setStopRow(getBytes(endKey));
     }
 
-    TableMapReduceUtil.addDependencyJars(job.getConfiguration(),
+    TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
         HbaseScapshot.class);
 
-    TableMapReduceUtil.initTableSnapshotMapperJob(
+    TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
         snapshotString,
         scan,
         ReaderHbaseMap.class,
