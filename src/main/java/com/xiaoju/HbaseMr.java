@@ -167,10 +167,8 @@ public class HbaseMr {
     Properties properties = readProperties(args[0]);
     String hbaseTableName = args[1];
     String hiveDb = properties.getProperty("HiveDb");
-    //String hiveTableName = properties.getProperty("HiveTable");
     String hiveTableName = hbaseTableName.toLowerCase();
     String familyName = properties.getProperty("FamilyName");
-    //String tableDir = properties.getProperty("TableDir");
     String zookeeperList = properties.getProperty("ZookeeperList");
     String startKey = args[2];
     String endKey = args[3];
@@ -182,7 +180,6 @@ public class HbaseMr {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-    //conf.set("hbase.rootdir", "hdfs://sec-data-analysis00.bh:8020/hbase-data");
     conf.set("hbase.zookeeper.quorum",zookeeperList);
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.Properties;
 
-public class HbaseSnapshotScan {
+public class HbaseScapshot {
 
   public static class ReaderHbaseMap extends TableMapper<NullWritable, Text> {
 
@@ -38,9 +38,9 @@ public class HbaseSnapshotScan {
     }
 
     public int changeColByType(String type) {
-      if (type.contains(ColumnType.LONG.toString())) {
+      if (type.contains("long")) {
         return ColumnType.LONG.ordinal();
-      } else if (type.contains(ColumnType.BIGINT.toString())) {
+      } else if (type.contains("bigint")) {
         return ColumnType.BIGINT.ordinal();
       } else if (type.contains("int")) {
         return ColumnType.INT.ordinal();
@@ -58,13 +58,13 @@ public class HbaseSnapshotScan {
       if (type == ColumnType.LONG.ordinal()) {
         return String.valueOf(Bytes.toLong(bytes));
       } else if (type == ColumnType.BIGINT.ordinal()) {
-        return String.valueOf(Bytes.toLong(bytes)).toString();
+        return String.valueOf(Bytes.toLong(bytes));
       } else if (type == ColumnType.INT.ordinal()) {
-        return String.valueOf(Bytes.toInt(bytes)).toString();
+        return String.valueOf(Bytes.toInt(bytes));
       } else if (type == ColumnType.STRING.ordinal()) {
         return Bytes.toString(bytes);
       } else if (type == ColumnType.DECIMAL.ordinal()) {
-        return Bytes.toBigDecimal(bytes).toString();
+        return String.valueOf(Bytes.toBigDecimal(bytes));
       } else {
         return Bytes.toString(bytes);
       }
@@ -88,7 +88,10 @@ public class HbaseSnapshotScan {
         splits = fields[i].split(":");
         colname2Index.put(splits[0], i);
         colname2Type.put(splits[0], changeColByType(splits[1].toLowerCase()));
+        System.out.println(splits[0] + " type: " + splits[1]);
       }
+
+
 
       String[] values = new String[fields.length];
       String colName = null;
@@ -101,11 +104,20 @@ public class HbaseSnapshotScan {
             cellName = (byte[]) entry.getKey();
             cellValue = (byte[]) entry.getValue();
             colName = Bytes.toString(cellName);
+            System.out.println("Col Name:"  + colName);
             index = colname2Index.get(colName.toLowerCase());
             if(index != null) {
+              System.out.println("find index:" + colName + " " + index);
               colType = colname2Type.get(colName.toLowerCase());
-              values[index] = tranformationColName(cellValue, colType);
+              try{
+                values[index] = tranformationColName(cellValue, colType);
+              } catch(Exception ex) {
+                System.out.println("*******Exception Cell Name:" + colName + " is Wrong!");
+              }
+            } else {
+              System.out.println("find index:" + colName);
             }
+
         }
       }
 
@@ -138,14 +150,28 @@ public class HbaseSnapshotScan {
     }
   }
 
+  public static String trimType(String type) {
+    if(type.contains("bigint")) {
+      return "bigint";
+    }
+
+    if(type.contains("long")) {
+      return "long";
+    }
+
+    if(type.contains("decimal")) {
+      return "decimal";
+    }
+
+    return type.toLowerCase();
+  }
+
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
     String hbaseTableName = args[1];
     String hiveDb = properties.getProperty("HiveDb");
-    //String hiveTableName = properties.getProperty("HiveTable");
     String hiveTableName = hbaseTableName.toLowerCase();
     String familyName = properties.getProperty("FamilyName");
-    //String tableDir = properties.getProperty("TableDir");
     String zookeeperList = properties.getProperty("ZookeeperList");
     String startKey = args[2];
     String endKey = args[3];
@@ -192,7 +218,7 @@ public class HbaseSnapshotScan {
     ResultSet cols = statement.executeQuery(querySql);
     sb.append("struct<");
     while (cols.next()) {
-      sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + ",");
+      sb.append(cols.getString(1).toLowerCase() + ":" + trimType(cols.getString(2).toLowerCase()) + ",");
     }
 
     sb.deleteCharAt(sb.length() - 1);
@@ -209,7 +235,7 @@ public class HbaseSnapshotScan {
     boolean foundSnapShot = false;
     for(HBaseProtos.SnapshotDescription s: snapshots) {
       if(s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
-          foundSnapShot = true;
+        foundSnapShot = true;
       }
     }
 
@@ -218,7 +244,7 @@ public class HbaseSnapshotScan {
     }
 
     Job job = new Job(conf, "Read Table:" + hbaseTableName);
-    job.setJarByClass(HbaseSnapshotScan.class);
+    job.setJarByClass(HbaseScapshot.class);
 
     Scan scan = new Scan();
     scan.setCaching(1000);
@@ -232,7 +258,7 @@ public class HbaseSnapshotScan {
     }
 
     TableMapReduceUtil.addDependencyJars(job.getConfiguration(),
-        HbaseSnapshotScan.class);
+        HbaseScapshot.class);
 
     TableMapReduceUtil.initTableSnapshotMapperJob(
         snapshotString,
