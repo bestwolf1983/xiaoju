@@ -76,7 +76,7 @@ public class HbaseMr {
       HashMap<String, Integer> colname2Index = new HashMap<String, Integer>();
       HashMap<String, Integer> colname2Type = new HashMap<String, Integer>();
       String fieldsStr = schema.substring("struct<".length(), schema.length() - 1 - (">".length()));
-      String[] fields = fieldsStr.split(",");
+      String[] fields = fieldsStr.split("&");
       String[] splits = null;
 
       byte[] cellName = null;
