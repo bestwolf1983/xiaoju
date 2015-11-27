@@ -85,7 +85,10 @@ public class HbaseMr {
         splits = fields[i].split("|");
         colname2Index.put(splits[0], i);
         colname2Type.put(splits[0], changeColByType(splits[1].toLowerCase()));
+        System.out.println(splits[0] + " type: " + splits[1]);
       }
+
+
 
       String[] values = new String[fields.length];
       String colName = null;
@@ -98,10 +101,14 @@ public class HbaseMr {
             cellName = (byte[]) entry.getKey();
             cellValue = (byte[]) entry.getValue();
             colName = Bytes.toString(cellName);
+            System.out.println("Col Name:"  + colName);
             index = colname2Index.get(colName.toLowerCase());
             if(index != null) {
+              System.out.println("find index:" + colName + " " + index);
               colType = colname2Type.get(colName.toLowerCase());
               values[index] = tranformationColName(cellValue, colType);
+            } else {
+              System.out.println("find index:" + colName);
             }
 
         }
