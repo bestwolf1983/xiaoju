@@ -50,7 +50,7 @@
   </property>
    <property>
     <name>hbase.tmp.dir</name>
-    <value>/home/hbase-tmp</value>
+    <value>/tmp</value>
   </property>
   <property>
      <name>hbase.regionserver.handler.count</name>
