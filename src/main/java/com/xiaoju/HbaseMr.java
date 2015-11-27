@@ -111,7 +111,6 @@ public class HbaseMr {
               } catch(Exception ex) {
                 System.out.println("*******Exception Cell Name:" + colName + " is Wrong!");
               }
-
             } else {
               System.out.println("find index:" + colName);
             }
@@ -124,7 +123,7 @@ public class HbaseMr {
         if (s != null) {
           sb.append(s);
         }
-        sb.append("\t");
+        sb.append("\001");
       }
       sb.deleteCharAt(sb.length() - 1);
 
