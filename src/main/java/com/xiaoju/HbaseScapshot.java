@@ -16,6 +16,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.FileInputStream;
@@ -265,11 +266,8 @@ public class HbaseScapshot {
     }
 
 
-    job.setOutputFormatClass(TextOutputFormat.class);
-    FileOutputFormat.setOutputPath(job, outputDir);
     TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
         HbaseScapshot.class);
-
     TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
         snapshotString,
         scan,
@@ -279,6 +277,10 @@ public class HbaseScapshot {
         job,
         true,
         restoreDir);
+
+    job.setNumReduceTasks(0);
+    job.setOutputFormatClass(TextOutputFormat.class);
+    FileOutputFormat.setOutputPath(job, outputDir);
 
     boolean b = job.waitForCompletion(true);
 
