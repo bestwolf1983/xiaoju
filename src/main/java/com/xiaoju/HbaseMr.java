@@ -136,6 +136,16 @@ public class HbaseMr {
     }
   }
 
+  public static String trimType(String type) {
+    if(type.contains(",")) {
+      if(type.equals("decimal")) {
+        return "decimal";
+      }
+    }
+    return type.toLowerCase();
+
+  }
+
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
     String hbaseTableName = args[1];
