@@ -18,10 +18,13 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -170,14 +173,14 @@ public class HbaseScapshot {
 
   public static void main(String[] args) throws Exception {
     Properties properties = readProperties(args[0]);
-    String hbaseTableName = args[1];
+    final String hbaseTableName = args[1];
     String hiveDb = properties.getProperty("HiveDb");
     String hiveTableName = hbaseTableName.toLowerCase();
     String familyName = properties.getProperty("FamilyName");
     String zookeeperList = properties.getProperty("ZookeeperList");
-    String startKey = args[2];
-    String endKey = args[3];
-    Configuration conf = HBaseConfiguration.create(new Configuration());
+    final String startKey = args[2];
+    final String endKey = args[3];
+    final Configuration conf = HBaseConfiguration.create(new Configuration());
     conf.set("Table", hbaseTableName);
     conf.set("StartKey", startKey.trim());
     conf.set("EndKey", endKey.trim());
@@ -210,13 +213,13 @@ public class HbaseScapshot {
     if(!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
+    final Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
     }
 
-    Path restoreDir = new Path("/tmp/anti-export/" + hiveTableName + "/restore");
+    final Path restoreDir = new Path("/tmp/anti-export/" + hiveTableName + "/restore");
     isExist = fs.exists(restoreDir);
     if (isExist) {
       fs.delete(restoreDir);
@@ -235,7 +238,7 @@ public class HbaseScapshot {
     conf.set("Schema", sb.toString());
     statement.close();
 
-    String snapshotString = hbaseTableName + System.currentTimeMillis();
+    final String snapshotString = hbaseTableName + System.currentTimeMillis();
     HBaseAdmin admin = new HBaseAdmin(conf);
     admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
 
@@ -250,39 +253,44 @@ public class HbaseScapshot {
     if(!foundSnapShot) {
       System.out.println("can not found the snapshot we take!!! program exit");
     }
-    Job job = new Job(conf, "Read Table:" + hbaseTableName);
-    job.setJarByClass(HbaseScapshot.class);
 
+    UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
+    boolean result = ugi.doAs(new PrivilegedExceptionAction<Boolean>() {
 
-    Scan scan = new Scan();
-    scan.setCaching(1000);
-    scan.setBatch(Integer.MAX_VALUE);
-    scan.setMaxVersions(1);
-    if(!startKey.equals("0")) {
-      scan.setStartRow(getBytes(startKey));
-    }
-    if(!endKey.equals("0")) {
-      scan.setStopRow(getBytes(endKey));
-    }
+      public Boolean run() throws Exception {
+        Job job = new Job(conf, "Read Table:" + hbaseTableName);
+        job.setJarByClass(HbaseScapshot.class);
 
+        Scan scan = new Scan();
+        scan.setCaching(1000);
+        scan.setBatch(Integer.MAX_VALUE);
+        scan.setMaxVersions(1);
+        if(!startKey.equals("0")) {
+          scan.setStartRow(getBytes(startKey));
+        }
+        if(!endKey.equals("0")) {
+          scan.setStopRow(getBytes(endKey));
+        }
 
-    TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
-        HbaseScapshot.class);
-    TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
-        snapshotString,
-        scan,
-        ReaderHbaseMap.class,
-        NullWritable.class,
-        Text.class,
-        job,
-        true,
-        restoreDir);
+        TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
+            HbaseScapshot.class);
+        TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
+            snapshotString,
+            scan,
+            ReaderHbaseMap.class,
+            NullWritable.class,
+            Text.class,
+            job,
+            true,
+            restoreDir);
 
-    job.setNumReduceTasks(0);
-    job.setOutputFormatClass(TextOutputFormat.class);
-    FileOutputFormat.setOutputPath(job, outputDir);
+        job.setNumReduceTasks(0);
+        job.setOutputFormatClass(TextOutputFormat.class);
+        FileOutputFormat.setOutputPath(job, outputDir);
+        return job.waitForCompletion(true);
+      }
+    });
 
-    boolean b = job.waitForCompletion(true);
 
 
 /*    if (b) {
