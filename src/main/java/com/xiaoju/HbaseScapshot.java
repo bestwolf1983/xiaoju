@@ -249,7 +249,7 @@ public class HbaseScapshot {
     if(!foundSnapShot) {
       System.out.println("can not found the snapshot we take!!! program exit");
     }
-
+    conf.set("mapreduce.output.fileoutputformat.outputdir", outputDir.toString());
     Job job = new Job(conf, "Read Table:" + hbaseTableName);
     job.setJarByClass(HbaseScapshot.class);
 
@@ -278,7 +278,6 @@ public class HbaseScapshot {
         true,
         restoreDir);
     job.setOutputFormatClass(TextOutputFormat.class);
-    FileOutputFormat.setOutputPath(job, outputDir);
     boolean b = job.waitForCompletion(true);
 
 
