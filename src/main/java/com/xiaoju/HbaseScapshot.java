@@ -238,26 +238,25 @@ public class HbaseScapshot {
     conf.set("Schema", sb.toString());
     statement.close();
 
-    final String snapshotString = hbaseTableName + System.currentTimeMillis();
-    HBaseAdmin admin = new HBaseAdmin(conf);
-    admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
-
-    List<HBaseProtos.SnapshotDescription> snapshots = admin.listSnapshots();
-    boolean foundSnapShot = false;
-    for(HBaseProtos.SnapshotDescription s: snapshots) {
-      if(s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
-        foundSnapShot = true;
-      }
-    }
-
-    if(!foundSnapShot) {
-      System.out.println("can not found the snapshot we take!!! program exit");
-    }
-
     UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
     boolean result = ugi.doAs(new PrivilegedExceptionAction<Boolean>() {
-
       public Boolean run() throws Exception {
+
+        final String snapshotString = hbaseTableName + System.currentTimeMillis();
+        HBaseAdmin admin = new HBaseAdmin(conf);
+        admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
+
+        List<HBaseProtos.SnapshotDescription> snapshots = admin.listSnapshots();
+        boolean foundSnapShot = false;
+        for(HBaseProtos.SnapshotDescription s: snapshots) {
+          if(s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
+            foundSnapShot = true;
+          }
+        }
+
+        if(!foundSnapShot) {
+          System.out.println("can not found the snapshot we take!!! program exit");
+        }
         Job job = new Job(conf, "Read Table:" + hbaseTableName);
         job.setJarByClass(HbaseScapshot.class);
 
@@ -290,8 +289,6 @@ public class HbaseScapshot {
         return job.waitForCompletion(true);
       }
     });
-
-
 
 /*    if (b) {
       Path tablePath = new Path(tableDir);
