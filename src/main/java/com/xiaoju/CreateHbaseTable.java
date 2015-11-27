@@ -20,7 +20,7 @@ public class CreateHbaseTable {
     Configuration conf = HBaseConfiguration.create();
     conf.set("hbase.zookeeper.quorum", "bigdata-arch-hdp277.bh,bigdata-arch-hdp278.bh,bigdata-arch-hdp279.bh");
     HBaseAdmin admin = new HBaseAdmin(conf);
-    HTableDescriptor tableDesc = new HTableDescriptor(args[0].toUpperCase());
+    HTableDescriptor tableDesc = new HTableDescriptor(args[0]);
     //MemStore大小
     tableDesc.setMemStoreFlushSize(128 * 1024 * 1024);
     HColumnDescriptor colDesc = new HColumnDescriptor("a");

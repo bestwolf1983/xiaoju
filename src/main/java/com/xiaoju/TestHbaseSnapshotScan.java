@@ -157,8 +157,8 @@ public class TestHbaseSnapshotScan {
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
     conf.set("hbase.zookeeper.quorum",zookeeperList);
-    Connection conn = DriverManager.getConnection(url, user, password);
-    Statement statement = conn.createStatement();
+    //Connection conn = DriverManager.getConnection(url, user, password);
+    //Statement statement = conn.createStatement();
 /*    String queryLocationSql = "select LOCATION from SDS where SD_ID in "
         + " (select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
         + "  where d.NAME='" + hiveDb +"' and t.TBL_NAME='" + hiveTableName + "')";
