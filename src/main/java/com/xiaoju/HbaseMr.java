@@ -82,7 +82,7 @@ public class HbaseMr {
       byte[] cellName = null;
       byte[] cellValue = null;
       for (int i = 0; i < fields.length; i++) {
-        splits = fields[i].split(":");
+        splits = fields[i].split("|");
         colname2Index.put(splits[0], i);
         colname2Type.put(splits[0], changeColByType(splits[1].toLowerCase()));
       }
@@ -134,16 +134,6 @@ public class HbaseMr {
     } catch (Exception ex) {
       return Bytes.toBytes(key);
     }
-  }
-
-  public static String trimType(String type) {
-    if(type.contains(",")) {
-      if(type.equals("decimal")) {
-        return "decimal";
-      }
-    }
-    return type.toLowerCase();
-
   }
 
   public static void main(String[] args) throws Exception {
@@ -201,7 +191,7 @@ public class HbaseMr {
     ResultSet cols = statement.executeQuery(querySql);
     sb.append("struct<");
     while (cols.next()) {
-      sb.append(cols.getString(1).toLowerCase() + ":" + cols.getString(2).toLowerCase() + ",");
+      sb.append(cols.getString(1).toLowerCase() + "|" + cols.getString(2).toLowerCase() + ",");
     }
 
     sb.deleteCharAt(sb.length() - 1);
