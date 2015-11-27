@@ -220,17 +220,17 @@ public class HbaseScapshot {
     conf.set("HdfsDir", tableDir.toString());
 
     FileSystem fs = FileSystem.get(conf);
-    Path antiExportPath = new Path("/tmp/anti-export");
+    Path antiExportPath = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export");
     if(!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    final Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
+    final Path outputDir = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
     }
 
-    final Path restoreDir = new Path("/tmp/anti-export/" + hiveTableName + "/restore");
+    final Path restoreDir = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export/" + hiveTableName + "/restore");
     isExist = fs.exists(restoreDir);
     if (isExist) {
       fs.delete(restoreDir);
