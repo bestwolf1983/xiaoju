@@ -36,7 +36,7 @@ import java.util.*;
 
 public class HbaseScapshot {
 
-  public static class ReaderHbaseMap extends TableMapper<NullWritable, Text> {
+  public static class ReaderHbaseMap extends TableMapper<IntWritable, Text> {
 
     public enum ColumnType {
       LONG, BIGINT, INT, STRING, DECIMAL
@@ -134,7 +134,7 @@ public class HbaseScapshot {
       }
       sb.deleteCharAt(sb.length() - 1);
       Random random = new Random();
-      context.write(null, new Text(sb.toString()));
+      context.write(new IntWritable(random.nextInt(10)), new Text(sb.toString()));
     }
   }
 
@@ -286,14 +286,14 @@ public class HbaseScapshot {
         snapshotString,
         scan,
         ReaderHbaseMap.class,
-        NullWritable.class,
+        IntWritable.class,
         Text.class,
         job,
         true,
         restoreDir);
 
-/*    job.setReducerClass(ReaderHbaseReduce.class);
-    job.setNumReduceTasks(10);*/
+    job.setReducerClass(ReaderHbaseReduce.class);
+    job.setNumReduceTasks(10);
     job.setOutputFormatClass(TextOutputFormat.class);
     job.getConfiguration().set("mapreduce.output.fileoutputformat.outputdir", outputDir.toString());
     //FileOutputFormat.setOutputPath(job, outputDir);
