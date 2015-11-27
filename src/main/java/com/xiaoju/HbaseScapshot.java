@@ -275,9 +275,9 @@ public class HbaseScapshot {
         job,
         true,
         restoreDir);
-
-    boolean b = job.waitForCompletion(true);
     FileOutputFormat.setOutputPath(job, outputDir);
+    boolean b = job.waitForCompletion(true);
+
 
 /*    if (b) {
       Path tablePath = new Path(tableDir);
