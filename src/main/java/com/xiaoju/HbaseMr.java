@@ -106,7 +106,12 @@ public class HbaseMr {
             if(index != null) {
               System.out.println("find index:" + colName + " " + index);
               colType = colname2Type.get(colName.toLowerCase());
-              values[index] = tranformationColName(cellValue, colType);
+              try{
+                values[index] = tranformationColName(cellValue, colType);
+              } catch(Exception ex) {
+                System.out.println("*******Exception Cell Name:" + colName + " is Wrong!");
+              }
+
             } else {
               System.out.println("find index:" + colName);
             }
