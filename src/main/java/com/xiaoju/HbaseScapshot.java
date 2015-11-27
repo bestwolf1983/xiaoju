@@ -25,6 +25,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
@@ -96,7 +97,6 @@ public class HbaseScapshot {
       }
 
 
-
       String[] values = new String[fields.length];
       String colName = null;
       Integer colType = null;
@@ -105,22 +105,22 @@ public class HbaseScapshot {
       for (java.util.Map.Entry res : resmap.entrySet()) {
         NavigableMap<byte[], byte[]> qualifiers = (NavigableMap<byte[], byte[]>) res.getValue();
         for (java.util.Map.Entry entry : qualifiers.entrySet()) {
-            cellName = (byte[]) entry.getKey();
-            cellValue = (byte[]) entry.getValue();
-            colName = Bytes.toString(cellName);
-            System.out.println("Col Name:"  + colName);
-            index = colname2Index.get(colName.toLowerCase());
-            if(index != null) {
-              System.out.println("find index:" + colName + " " + index);
-              colType = colname2Type.get(colName.toLowerCase());
-              try{
-                values[index] = tranformationColName(cellValue, colType);
-              } catch(Exception ex) {
-                System.out.println("*******Exception Cell Name:" + colName + " is Wrong!");
-              }
-            } else {
-              System.out.println("find index:" + colName);
+          cellName = (byte[]) entry.getKey();
+          cellValue = (byte[]) entry.getValue();
+          colName = Bytes.toString(cellName);
+          System.out.println("Col Name:" + colName);
+          index = colname2Index.get(colName.toLowerCase());
+          if (index != null) {
+            System.out.println("find index:" + colName + " " + index);
+            colType = colname2Type.get(colName.toLowerCase());
+            try {
+              values[index] = tranformationColName(cellValue, colType);
+            } catch (Exception ex) {
+              System.out.println("*******Exception Cell Name:" + colName + " is Wrong!");
             }
+          } else {
+            System.out.println("find index:" + colName);
+          }
 
         }
       }
@@ -143,7 +143,7 @@ public class HbaseScapshot {
     protected void reduce(IntWritable key, Iterable<Text> values,
                           Context context) throws IOException, InterruptedException {
       Iterator<Text> iter = values.iterator();
-      while(iter.hasNext()) {
+      while (iter.hasNext()) {
         context.write(null, iter.next());
       }
     }
@@ -167,15 +167,15 @@ public class HbaseScapshot {
   }
 
   public static String trimType(String type) {
-    if(type.contains("bigint")) {
+    if (type.contains("bigint")) {
       return "bigint";
     }
 
-    if(type.contains("long")) {
+    if (type.contains("long")) {
       return "long";
     }
 
-    if(type.contains("decimal")) {
+    if (type.contains("decimal")) {
       return "decimal";
     }
 
@@ -199,12 +199,12 @@ public class HbaseScapshot {
     String url = properties.getProperty("JdbcUrl");
     String user = properties.getProperty("User");
     String password = properties.getProperty("Password");
-    conf.set("hbase.zookeeper.quorum",zookeeperList);
+    conf.set("hbase.zookeeper.quorum", zookeeperList);
     Connection conn = DriverManager.getConnection(url, user, password);
     Statement statement = conn.createStatement();
     String queryLocationSql = "select LOCATION from SDS where SD_ID in "
         + " (select t.SD_ID from DBS d left join TBLS t on d.DB_ID=t.DB_ID "
-        + "  where d.NAME='" + hiveDb +"' and t.TBL_NAME='" + hiveTableName + "')";
+        + "  where d.NAME='" + hiveDb + "' and t.TBL_NAME='" + hiveTableName + "')";
 
     ResultSet locationSet = statement.executeQuery(queryLocationSql);
     locationSet.next();
@@ -220,20 +220,21 @@ public class HbaseScapshot {
     conf.set("HdfsDir", tableDir.toString());
 
     FileSystem fs = FileSystem.get(conf);
-    Path antiExportPath = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export");
-    if(!fs.exists(antiExportPath)) {
+    Path antiExportPath = new Path("/tmp/anti-export");
+    if (!fs.exists(antiExportPath)) {
       fs.mkdirs(antiExportPath);
     }
-    final Path outputDir = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export/" + hiveTableName + "/output");
+    final Path outputDir = new Path("/tmp/anti-export/" + hiveTableName + "/output");
     boolean isExist = fs.exists(outputDir);
     if (isExist) {
       fs.delete(outputDir);
     }
 
     final Path restoreDir = new Path("hdfs://sec-data-analysis00.bh:8020/tmp/anti-export/" + hiveTableName + "/restore");
-    isExist = fs.exists(restoreDir);
+    FileSystem srcFs = FileSystem.get(URI.create(restoreDir.toString()),conf);
+    isExist = srcFs.exists(restoreDir);
     if (isExist) {
-      fs.delete(restoreDir);
+      srcFs.delete(restoreDir);
     }
 
     StringBuilder sb = new StringBuilder();
@@ -249,57 +250,53 @@ public class HbaseScapshot {
     conf.set("Schema", sb.toString());
     statement.close();
 
-    UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
-    boolean result = ugi.doAs(new PrivilegedExceptionAction<Boolean>() {
-      public Boolean run() throws Exception {
 
-        final String snapshotString = hbaseTableName + System.currentTimeMillis();
-        HBaseAdmin admin = new HBaseAdmin(conf);
-        admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
+    final String snapshotString = hbaseTableName + System.currentTimeMillis();
+    HBaseAdmin admin = new HBaseAdmin(conf);
+    admin.snapshot(snapshotString, hbaseTableName, HBaseProtos.SnapshotDescription.Type.FLUSH);
 
-        List<HBaseProtos.SnapshotDescription> snapshots = admin.listSnapshots();
-        boolean foundSnapShot = false;
-        for(HBaseProtos.SnapshotDescription s: snapshots) {
-          if(s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
-            foundSnapShot = true;
-          }
-        }
-
-        if(!foundSnapShot) {
-          System.out.println("can not found the snapshot we take!!! program exit");
-        }
-        Job job = new Job(conf, "Read Table:" + hbaseTableName);
-        job.setJarByClass(HbaseScapshot.class);
-
-        Scan scan = new Scan();
-        scan.setCaching(1000);
-        scan.setBatch(Integer.MAX_VALUE);
-        scan.setMaxVersions(1);
-        if(!startKey.equals("0")) {
-          scan.setStartRow(getBytes(startKey));
-        }
-        if(!endKey.equals("0")) {
-          scan.setStopRow(getBytes(endKey));
-        }
-
-        TableSnapshotMapReduceUtil.addDependencyJars(job.getConfiguration(),
-            HbaseScapshot.class);
-        TableSnapshotMapReduceUtil.initTableSnapshotMapperJob(
-            snapshotString,
-            scan,
-            ReaderHbaseMap.class,
-            IntWritable.class,
-            Text.class,
-            job,
-            true,
-            restoreDir);
-        job.setReducerClass(ReaderHbaseReduce.class);
-        job.setNumReduceTasks(10);
-        job.setOutputFormatClass(TextOutputFormat.class);
-        FileOutputFormat.setOutputPath(job, outputDir);
-        return job.waitForCompletion(true);
+    List<HBaseProtos.SnapshotDescription> snapshots = admin.listSnapshots();
+    boolean foundSnapShot = false;
+    for (HBaseProtos.SnapshotDescription s : snapshots) {
+      if (s.getTable().equals(hbaseTableName) && s.getName().equals(snapshotString)) {
+        foundSnapShot = true;
       }
-    });
+    }
+
+    if (!foundSnapShot) {
+      System.out.println("can not found the snapshot we take!!! program exit");
+    }
+    Job job = new Job(conf, "Read Table:" + hbaseTableName);
+    job.setJarByClass(HbaseScapshot.class);
+
+    Scan scan = new Scan();
+    scan.setCaching(1000);
+    scan.setBatch(Integer.MAX_VALUE);
+    scan.setMaxVersions(1);
+    if (!startKey.equals("0")) {
+      scan.setStartRow(getBytes(startKey));
+    }
+    if (!endKey.equals("0")) {
+      scan.setStopRow(getBytes(endKey));
+    }
+
+    TableMapReduceUtil.addDependencyJars(job.getConfiguration(),
+        HbaseScapshot.class);
+    TableMapReduceUtil.initTableSnapshotMapperJob(
+        snapshotString,
+        scan,
+        ReaderHbaseMap.class,
+        IntWritable.class,
+        Text.class,
+        job,
+        true,
+        restoreDir);
+
+    job.setReducerClass(ReaderHbaseReduce.class);
+    job.setNumReduceTasks(10);
+    job.setOutputFormatClass(TextOutputFormat.class);
+    FileOutputFormat.setOutputPath(job, outputDir);
+    boolean b = job.waitForCompletion(true);
 
 /*    if (b) {
       Path tablePath = new Path(tableDir);
